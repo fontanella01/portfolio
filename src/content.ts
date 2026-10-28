@@ -59,7 +59,7 @@ const LINKS = {
 export { LINKS };
 
 const helpdeskImages = [
-  { src: "/projects/helpdesk-tickets.png", alt: "HelpDesk — tickets" },
+  { src: "/projects/helpdesk-tickets.png", alt: "HelpDesk — ticket conversation and history" },
   { src: "/projects/helpdesk-ai-assistant.png", alt: "HelpDesk — AI assistant" },
   { src: "/projects/helpdesk-dashboard.png", alt: "HelpDesk — dashboard" },
 ];
@@ -113,6 +113,7 @@ export const CONTENT: Record<Lang, Content> = {
           highlights: [
             "Cada empresa tem seu espaço; toda consulta é filtrada pela organização do usuário",
             "SLA por prioridade, que para quando o chamado é resolvido e volta se for reaberto",
+            "Conversa com o cliente, notas internas, responsável por chamado e histórico de quem mudou o quê",
             "Triagem com a API do Claude: o atendente revisa antes de aplicar, nada é enviado sozinho",
             "Testes automatizados e CI; PostgreSQL rodando em WebAssembly nos testes",
           ],
@@ -291,6 +292,7 @@ export const CONTENT: Record<Lang, Content> = {
           highlights: [
             "Each company gets its own workspace; every query is scoped to the user's organization",
             "Per-priority SLA that stops when a ticket is resolved and restarts if it is reopened",
+            "Customer replies, internal notes, ticket assignment and a history of who changed what",
             "Triage with the Claude API: the agent reviews before applying, nothing is sent automatically",
             "Automated tests and CI; PostgreSQL runs in WebAssembly during tests",
           ],
