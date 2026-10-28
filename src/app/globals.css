@@ -1,37 +1,48 @@
 @import "tailwindcss";
 
+/* Paleta: papel azulado, tinta de caneta, o roxo do "sinal" (algo chegando)
+   e o verde de "entregue" (o check duplo). */
 :root {
-  --background: #fafaf9;
-  --surface: #ffffff;
-  --foreground: #1c1917;
-  --muted: #57534e;
-  --border: #e7e5e4;
-  --accent: #2563eb;
-  --accent-soft: #dbeafe;
+  --papel: #eef2f7;
+  --surface: #f8fafc;
+  --tinta: #13233a;
+  --muted: #4a5a70;
+  --nevoa: #c9d3e0;
+  --sinal: #4c3bff;
+  --sinal-soft: #e4e1ff;
+  --entregue: #1f9e7a;
+  --bubble-in: #ffffff;
+  --bubble-out: #dff3ea;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0c0a09;
-    --surface: #1c1917;
-    --foreground: #f5f5f4;
-    --muted: #a8a29e;
-    --border: #292524;
-    --accent: #60a5fa;
-    --accent-soft: #1e3a5f;
+    --papel: #0f1a2b;
+    --surface: #16243a;
+    --tinta: #e6ecf5;
+    --muted: #9aa8bc;
+    --nevoa: #2a3b55;
+    --sinal: #9488ff;
+    --sinal-soft: #26265a;
+    --entregue: #3cc79b;
+    --bubble-in: #1d2d47;
+    --bubble-out: #173b36;
   }
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-papel: var(--papel);
   --color-surface: var(--surface);
-  --color-foreground: var(--foreground);
+  --color-tinta: var(--tinta);
   --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-nevoa: var(--nevoa);
+  --color-sinal: var(--sinal);
+  --color-sinal-soft: var(--sinal-soft);
+  --color-entregue: var(--entregue);
+  --color-bubble-in: var(--bubble-in);
+  --color-bubble-out: var(--bubble-out);
+  --font-display: var(--font-bricolage);
+  --font-serif: var(--font-source-serif);
 }
 
 html {
@@ -39,6 +50,109 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+:focus-visible {
+  outline: 2px solid var(--sinal);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--sinal-soft);
+}
+
+/* Conversa do topo: uma única sequência ao carregar a página. */
+.chat-item {
+  animation: chat-arrive 420ms ease-out both;
+  animation-delay: var(--d);
+}
+
+.chat-typing {
+  overflow: hidden;
+  animation: chat-typing var(--t) ease-in-out both;
+  animation-delay: var(--d);
+}
+
+.chat-typing span {
+  animation: chat-dot 900ms ease-in-out infinite;
+}
+.chat-typing span:nth-child(2) {
+  animation-delay: 150ms;
+}
+.chat-typing span:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+.chat-ticks {
+  color: var(--muted);
+  animation: chat-read 300ms ease-out both;
+  animation-delay: var(--r);
+}
+
+@keyframes chat-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes chat-typing {
+  0% {
+    opacity: 0;
+    max-height: 0;
+  }
+  12%,
+  88% {
+    opacity: 1;
+    max-height: 3rem;
+  }
+  100% {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    padding-block: 0;
+  }
+}
+
+@keyframes chat-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes chat-read {
+  to {
+    color: var(--entregue);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .chat-item,
+  .chat-ticks,
+  .chat-typing span {
+    animation: none;
+  }
+  .chat-ticks {
+    color: var(--entregue);
+  }
+  .chat-typing {
+    display: none;
+  }
 }

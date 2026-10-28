@@ -26,11 +26,24 @@ type CaseStudy = {
 
 type Job = { role: string; company: string; period: string; items: string[] };
 
+type Product = { name: string; what: string; role: string; stack: string[] };
+
+export type ChatLine = { from: "in" | "out" | "event"; text: string; time?: string };
+
 type Content = {
   meta: { title: string; description: string };
-  nav: { projects: string; cases: string; experience: string; contact: string };
-  hero: { greeting: string; role: string; summary: string; cv: string; cvHref: string; available: string };
+  nav: { projects: string; work: string; cases: string; experience: string; contact: string };
+  hero: {
+    name: string;
+    headline: string;
+    summary: string;
+    cv: string;
+    cvHref: string;
+    available: string;
+    chat: { contact: string; status: string; lines: ChatLine[]; caption: string };
+  };
   projects: { title: string; subtitle: string; repoLabel: string; demoLabel: string; soon: string; items: Project[] };
+  work: { title: string; subtitle: string; roleLabel: string; items: Product[] };
   cases: { title: string; subtitle: string; labels: { problem: string; solution: string; result: string }; items: CaseStudy[] };
   experience: { title: string; items: Job[] };
   stack: { title: string; groups: [string, string][] };
@@ -63,15 +76,28 @@ export const CONTENT: Record<Lang, Content> = {
       description:
         "Desenvolvedor full stack em Joinville/SC: React, TypeScript, Node, PostgreSQL/Supabase, integrações com a Meta e agentes de IA.",
     },
-    nav: { projects: "Projetos", cases: "Estudos de caso", experience: "Experiência", contact: "Contato" },
+    nav: { projects: "Projetos", work: "No trabalho", cases: "Estudos de caso", experience: "Experiência", contact: "Contato" },
     hero: {
-      greeting: "Olá, eu sou o Vinícius",
-      role: "Desenvolvedor Full Stack",
+      name: "Vinícius Fontanella Kleis",
+      headline: "Desenvolvedor full stack. Faço sistemas que conversam com clientes, pagamentos e IA.",
       summary:
         "Construo e mantenho produtos SaaS de ponta a ponta: do banco de dados (PostgreSQL com RLS) às telas em React e TypeScript, passando por APIs, webhooks, integrações com WhatsApp e Meta e agentes de IA em produção.",
       cv: "Baixar currículo",
       cvHref: "/cv/curriculo-vinicius-fontanella-kleis.pdf",
       available: "Aberto a novas oportunidades",
+      chat: {
+        contact: "Clínica Aurora",
+        status: "agente de IA ativo",
+        lines: [
+          { from: "in", text: "Oi! Vocês atendem no sábado?", time: "09:41" },
+          { from: "event", text: "Webhook recebido, agente de IA respondendo" },
+          { from: "out", text: "Atendemos sim, das 9h às 13h. Quer que eu reserve um horário?", time: "09:41" },
+          { from: "in", text: "Quero, às 10h", time: "09:42" },
+          { from: "event", text: "Horário gravado na agenda" },
+          { from: "out", text: "Pronto! Sábado às 10h está reservado para você.", time: "09:42" },
+        ],
+        caption: "Simulação de um agente de IA atendendo pelo WhatsApp, como os que eu mantenho em produção.",
+      },
     },
     projects: {
       title: "Projetos",
@@ -101,12 +127,37 @@ export const CONTENT: Record<Lang, Content> = {
           highlights: [
             "Funções serverless no Cloudflare Pages criam o pagamento no Mercado Pago",
             "Preços lidos só no servidor: corrigi uma falha em que o navegador podia definir o próprio preço",
-            "Webhook para notificações de pagamento e página de retorno",
-            "Sem dependências nem etapa de build",
+            "Webhook que confere a assinatura do Mercado Pago e consulta o pagamento na API, sem confiar no que chega na notificação",
+            "Testes automáticos de preço e de assinatura rodando no GitHub Actions; sem dependências nem etapa de build",
           ],
-          stack: ["HTML", "CSS", "JavaScript", "Cloudflare Pages Functions", "Mercado Pago"],
+          stack: ["HTML", "CSS", "JavaScript", "Cloudflare Pages Functions", "Mercado Pago", "node:test"],
           repo: `${LINKS.github}/online-store-mercadopago`,
           images: storeImages,
+        },
+      ],
+    },
+    work: {
+      title: "No trabalho",
+      subtitle: "Produtos SaaS em produção em que trabalho hoje. O código é privado; os estudos de caso abaixo contam alguns problemas que resolvi neles.",
+      roleLabel: "Meu papel",
+      items: [
+        {
+          name: "Plotado",
+          what: "CRM multiempresa para pequenos negócios, com atendimento pelo WhatsApp, agentes de IA respondendo clientes e assinaturas pelo Stripe.",
+          role: "Agentes de IA e regras de atendimento, webhooks do WhatsApp, cobrança, banco de dados e sustentação com análise de causa raiz.",
+          stack: ["React", "TypeScript", "Supabase", "Edge Functions", "Stripe", "LLM"],
+        },
+        {
+          name: "X-Flow",
+          what: "Plataforma de gestão para agências de marketing que reúne clientes, tarefas e as contas de Facebook, Instagram e anúncios.",
+          role: "Integração com as APIs da Meta (Graph e Marketing API), coleta de métricas e a revisão do app pela Meta.",
+          stack: ["React", "TypeScript", "Supabase", "Meta Graph API", "OAuth"],
+        },
+        {
+          name: "FastBlog",
+          what: "Plataforma que gera e publica conteúdo de blog para empresas, com planos por assinatura.",
+          role: "Pagamentos, notas fiscais de serviço e manutenção das funções de backend.",
+          stack: ["React", "TypeScript", "Supabase", "Stripe"],
         },
       ],
     },
@@ -197,15 +248,28 @@ export const CONTENT: Record<Lang, Content> = {
       description:
         "Full stack developer based in Brazil: React, TypeScript, Node, PostgreSQL/Supabase, Meta integrations and AI agents.",
     },
-    nav: { projects: "Projects", cases: "Case studies", experience: "Experience", contact: "Contact" },
+    nav: { projects: "Projects", work: "At work", cases: "Case studies", experience: "Experience", contact: "Contact" },
     hero: {
-      greeting: "Hi, I'm Vinícius",
-      role: "Full Stack Developer",
+      name: "Vinícius Fontanella Kleis",
+      headline: "Full stack developer. I build systems that talk to customers, payments and AI.",
       summary:
         "I build and maintain SaaS products end to end: from the database (PostgreSQL with Row Level Security) to React and TypeScript interfaces, including APIs, webhooks, WhatsApp and Meta integrations, and AI agents running in production.",
       cv: "Download resume",
       cvHref: "/cv/resume-vinicius-fontanella-kleis.pdf",
       available: "Open to new opportunities",
+      chat: {
+        contact: "Aurora Clinic",
+        status: "AI agent active",
+        lines: [
+          { from: "in", text: "Hi! Are you open on Saturday?", time: "09:41" },
+          { from: "event", text: "Webhook received, AI agent replying" },
+          { from: "out", text: "We are, from 9am to 1pm. Want me to book a time for you?", time: "09:41" },
+          { from: "in", text: "Yes, 10am please", time: "09:42" },
+          { from: "event", text: "Booking saved to the calendar" },
+          { from: "out", text: "Done! Saturday at 10am is booked for you.", time: "09:42" },
+        ],
+        caption: "A simulated AI agent answering on WhatsApp, like the ones I run in production.",
+      },
     },
     projects: {
       title: "Projects",
@@ -235,12 +299,37 @@ export const CONTENT: Record<Lang, Content> = {
           highlights: [
             "Serverless functions on Cloudflare Pages create the Mercado Pago payment",
             "Prices are read server-side only: I fixed a bug where the browser could set its own price",
-            "Webhook for payment notifications and a return page",
-            "No dependencies and no build step",
+            "A webhook that verifies Mercado Pago's signature and reads the payment from the API instead of trusting the notification",
+            "Automated tests for prices and signatures on GitHub Actions; no dependencies and no build step",
           ],
-          stack: ["HTML", "CSS", "JavaScript", "Cloudflare Pages Functions", "Mercado Pago"],
+          stack: ["HTML", "CSS", "JavaScript", "Cloudflare Pages Functions", "Mercado Pago", "node:test"],
           repo: `${LINKS.github}/online-store-mercadopago`,
           images: storeImages,
+        },
+      ],
+    },
+    work: {
+      title: "At work",
+      subtitle: "SaaS products in production that I work on today. The code is private; the case studies below cover some problems I solved in them.",
+      roleLabel: "My role",
+      items: [
+        {
+          name: "Plotado",
+          what: "A multi-tenant CRM for small businesses, with customer service on WhatsApp, AI agents answering customers and Stripe subscriptions.",
+          role: "AI agents and handoff rules, WhatsApp webhooks, billing, database work and production support with root cause analysis.",
+          stack: ["React", "TypeScript", "Supabase", "Edge Functions", "Stripe", "LLM"],
+        },
+        {
+          name: "X-Flow",
+          what: "A management platform for marketing agencies that brings together clients, tasks and their Facebook, Instagram and ad accounts.",
+          role: "Integration with the Meta APIs (Graph and Marketing API), metrics collection and Meta's app review.",
+          stack: ["React", "TypeScript", "Supabase", "Meta Graph API", "OAuth"],
+        },
+        {
+          name: "FastBlog",
+          what: "A platform that writes and publishes blog content for businesses, sold as a subscription.",
+          role: "Payments, service e-invoices and maintenance of the backend functions.",
+          stack: ["React", "TypeScript", "Supabase", "Stripe"],
         },
       ],
     },
