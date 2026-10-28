@@ -102,7 +102,6 @@ export default async function Home({ params }: { params: Params }) {
             {c.projects.items.map((p) => (
               <ProjectCard key={p.name} project={p} repoLabel={c.projects.repoLabel} demoLabel={c.projects.demoLabel} />
             ))}
-            <p className="max-w-2xl rounded-xl border border-dashed border-nevoa px-6 py-5 text-muted">{c.projects.soon}</p>
           </div>
         </Section>
 

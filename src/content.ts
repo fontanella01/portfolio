@@ -42,7 +42,7 @@ type Content = {
     available: string;
     chat: { contact: string; status: string; lines: ChatLine[]; caption: string };
   };
-  projects: { title: string; subtitle: string; repoLabel: string; demoLabel: string; soon: string; items: Project[] };
+  projects: { title: string; subtitle: string; repoLabel: string; demoLabel: string; items: Project[] };
   work: { title: string; subtitle: string; roleLabel: string; items: Product[] };
   cases: { title: string; subtitle: string; labels: { problem: string; solution: string; result: string }; items: CaseStudy[] };
   experience: { title: string; items: Job[] };
@@ -62,6 +62,11 @@ const helpdeskImages = [
   { src: "/projects/helpdesk-tickets.png", alt: "HelpDesk — ticket conversation and history" },
   { src: "/projects/helpdesk-ai-assistant.png", alt: "HelpDesk — AI assistant" },
   { src: "/projects/helpdesk-dashboard.png", alt: "HelpDesk — dashboard" },
+];
+const relayImages = [
+  { src: "/projects/relay-inbox.png", alt: "Relay — inbox with the AI answering and the phone simulator" },
+  { src: "/projects/relay-handoff.png", alt: "Relay — conversation handed to the team" },
+  { src: "/projects/relay-knowledge.png", alt: "Relay — knowledge base" },
 ];
 const storeImages = [
   { src: "/projects/store-home.png", alt: "Store — catalog" },
@@ -104,8 +109,21 @@ export const CONTENT: Record<Lang, Content> = {
       subtitle: "Projetos pessoais com código aberto no GitHub.",
       repoLabel: "Código",
       demoLabel: "Ver online",
-      soon: "Em construção: agente de atendimento com IA para WhatsApp, com base de conhecimento (RAG) e passagem para humano.",
       items: [
+        {
+          name: "Relay: agente de IA para WhatsApp",
+          summary:
+            "Agente que responde o WhatsApp de uma empresa a partir da base de conhecimento dela e passa a conversa para um atendente quando não consegue ajudar. A equipe acompanha tudo ao vivo e pode assumir a qualquer momento.",
+          highlights: [
+            "RAG com busca textual do PostgreSQL: a IA recebe só os trechos que respondem à pergunta e é instruída a não inventar",
+            "Passa para humano quando o cliente pede, quer agendar, cancelar, reclamar ou pergunta algo fora da base",
+            "Webhook da API oficial do WhatsApp com assinatura verificada; fila no próprio PostgreSQL com novas tentativas e sem mensagem duplicada",
+            "Caixa de entrada em tempo real (SSE) e um simulador de celular para testar sem conta do WhatsApp; 36 testes, CI e Docker",
+          ],
+          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Claude API", "WhatsApp Cloud API", "SSE", "Docker"],
+          repo: `${LINKS.github}/whatsapp-ai-agent`,
+          images: relayImages,
+        },
         {
           name: "HelpDesk",
           summary:
@@ -283,8 +301,21 @@ export const CONTENT: Record<Lang, Content> = {
       subtitle: "Personal projects, open source on GitHub.",
       repoLabel: "Code",
       demoLabel: "Live demo",
-      soon: "In progress: an AI customer service agent for WhatsApp, with a knowledge base (RAG) and human handoff.",
       items: [
+        {
+          name: "Relay: WhatsApp AI agent",
+          summary:
+            "An agent that answers a business's WhatsApp from its own knowledge base and hands the conversation to a person when it can't help. The team follows everything live and can take over at any moment.",
+          highlights: [
+            "RAG with PostgreSQL full-text search: the AI gets only the sections that answer the question and is told not to make things up",
+            "Hands off to a person when the customer asks for one, wants to book, cancel or complain, or asks something not covered",
+            "WhatsApp Cloud API webhook with signature checks; a job queue inside PostgreSQL with retries and no duplicate messages",
+            "Live inbox (SSE) and a phone simulator to try it without a WhatsApp account; 36 tests, CI and Docker",
+          ],
+          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Claude API", "WhatsApp Cloud API", "SSE", "Docker"],
+          repo: `${LINKS.github}/whatsapp-ai-agent`,
+          images: relayImages,
+        },
         {
           name: "HelpDesk",
           summary:
