@@ -159,6 +159,12 @@ export const CONTENT: Record<Lang, Content> = {
           role: "Pagamentos, notas fiscais de serviço e manutenção das funções de backend.",
           stack: ["React", "TypeScript", "Supabase", "Stripe"],
         },
+        {
+          name: "EngraxaMente",
+          what: "Plataforma de cursos online com área do aluno, provas, certificados e trilhas de estudo sugeridas por IA.",
+          role: "Painéis de engajamento e relatórios calculados no banco, certificados, provas, assistente e trilhas com IA e a migração dos alunos da plataforma antiga.",
+          stack: ["React", "TypeScript", "Supabase", "PostgreSQL", "LLM"],
+        },
       ],
     },
     cases: {
@@ -330,6 +336,12 @@ export const CONTENT: Record<Lang, Content> = {
           what: "A platform that writes and publishes blog content for businesses, sold as a subscription.",
           role: "Payments, service e-invoices and maintenance of the backend functions.",
           stack: ["React", "TypeScript", "Supabase", "Stripe"],
+        },
+        {
+          name: "EngraxaMente",
+          what: "An online learning platform with a student area, exams, certificates and AI-suggested learning paths.",
+          role: "Engagement dashboards and reports computed in the database, certificates, exams, the AI assistant and learning paths, and the migration of students from the old platform.",
+          stack: ["React", "TypeScript", "Supabase", "PostgreSQL", "LLM"],
         },
       ],
     },

@@ -107,7 +107,7 @@ export default async function Home({ params }: { params: Params }) {
         </Section>
 
         <Section id="work" title={c.work.title} subtitle={c.work.subtitle}>
-          <div className="grid gap-10 md:grid-cols-3 md:gap-8">
+          <div className="grid gap-x-10 gap-y-12 md:grid-cols-2">
             {c.work.items.map((p) => (
               <article key={p.name} className="border-t-2 border-tinta pt-5">
                 <h3 className="font-display text-2xl font-semibold tracking-tight">{p.name}</h3>
