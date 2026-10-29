@@ -13,6 +13,11 @@
   --entregue: #1f9e7a;
   --bubble-in: #ffffff;
   --bubble-out: #dff3ea;
+  /* dark bands that break the page rhythm */
+  --band: #13233a;
+  --band-text: #e6ecf5;
+  --band-muted: #9aa8bc;
+  --band-line: #2a3b55;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,6 +32,10 @@
     --entregue: #3cc79b;
     --bubble-in: #1d2d47;
     --bubble-out: #173b36;
+    --band: #0a1322;
+    --band-text: #e6ecf5;
+    --band-muted: #8d9bb0;
+    --band-line: #22324a;
   }
 }
 
@@ -41,6 +50,10 @@
   --color-entregue: var(--entregue);
   --color-bubble-in: var(--bubble-in);
   --color-bubble-out: var(--bubble-out);
+  --color-band: var(--band);
+  --color-band-text: var(--band-text);
+  --color-band-muted: var(--band-muted);
+  --color-band-line: var(--band-line);
   --font-display: var(--font-bricolage);
   --font-serif: var(--font-source-serif);
 }
@@ -143,9 +156,32 @@ body {
   }
 }
 
+/* Live map: the dashed line drifts in the direction data flows. */
+.map-flow {
+  stroke-dasharray: 2 8;
+  animation: map-flow 1.6s linear infinite;
+}
+@keyframes map-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+/* Preview steps fade in when they become the current step. */
+.step-in {
+  animation: chat-arrive 360ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .map-flow,
+  .step-in {
+    animation: none;
+  }
+  .map-packet {
+    display: none;
   }
   .chat-item,
   .chat-ticks,

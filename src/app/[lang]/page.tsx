@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { CONTENT, LINKS, isLang } from "@/content";
 import { SITE_URL } from "@/site";
 import { ChatExplorer } from "@/components/ChatExplorer";
-import { ProjectCard } from "@/components/ProjectCard";
+import { ProjectTabs } from "@/components/ProjectTabs";
+import { SystemMap } from "@/components/SystemMap";
 import { Section } from "@/components/Section";
 
 type Params = Promise<{ lang: string }>;
@@ -47,8 +48,9 @@ export default async function Home({ params }: { params: Params }) {
           <div className="flex items-center gap-5 text-muted">
             {(
               [
+                ["#map", c.nav.map],
                 ["#projects", c.nav.projects],
-                ["#work", c.nav.work],
+                ["#path", c.nav.path],
                 ["#stories", c.nav.stories],
               ] as const
             ).map(([href, label]) => (
@@ -66,8 +68,8 @@ export default async function Home({ params }: { params: Params }) {
         </nav>
       </header>
 
-      <main id="top" className="mx-auto max-w-6xl px-5">
-        <section className="grid items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+      <main id="top">
+        <section className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
           <div>
             <Image
               src={PHOTO}
@@ -99,91 +101,101 @@ export default async function Home({ params }: { params: Params }) {
           <ChatExplorer script={c.chat} photo={PHOTO} name={c.chat.labels.me} />
         </section>
 
-        <Section id="projects" title={c.projects.title} subtitle={c.projects.subtitle}>
-          <div className="grid gap-20">
-            {c.projects.items.map((p) => (
-              <ProjectCard key={p.name} project={p} labels={c.projects} />
-            ))}
-          </div>
+        <Section id="map" title={c.map.title} subtitle={c.map.subtitle} tone="dark">
+          <SystemMap nodes={c.map.nodes} hint={c.map.hint} didLabel={c.map.didLabel} />
         </Section>
 
-        <Section id="work" title={c.work.title} subtitle={c.work.subtitle}>
-          <dl className="grid gap-x-10 gap-y-8 md:grid-cols-2">
-            {c.work.items.map((p) => (
-              <div key={p.name} className="border-t-2 border-tinta pt-4">
-                <dt className="font-display text-xl font-semibold tracking-tight">{p.name}</dt>
-                <dd className="mt-2">{p.what}</dd>
-                <dd className="mt-1 text-muted">{p.role}</dd>
-              </div>
-            ))}
-          </dl>
+        <Section id="projects" title={c.projects.title} subtitle={c.projects.subtitle} divider={false}>
+          <ProjectTabs projects={c.projects.items} labels={c.projects} previews={c.previews} />
         </Section>
 
-        <Section id="stories" title={c.stories.title} subtitle={c.stories.subtitle}>
-          <div className="grid max-w-3xl gap-4">
+        <Section id="path" title={c.trajectory.title} subtitle={c.trajectory.subtitle}>
+          <ol className="grid max-w-4xl gap-10 border-l-2 border-nevoa pl-8">
+            {c.experience.items.map((job, i) => (
+              <li key={job.company} className="relative">
+                <span
+                  aria-hidden
+                  className={`absolute -left-[2.55rem] top-2 h-4 w-4 rounded-full ${i === 0 ? "bg-sinal ring-4 ring-sinal-soft" : "border-2 border-nevoa bg-papel"}`}
+                />
+                <p className="font-display text-sm text-muted">{job.period}</p>
+                <h3 className="mt-1 font-display text-2xl font-semibold tracking-tight">
+                  {job.role} <span className="font-normal text-muted">· {job.company}</span>
+                </h3>
+                <p className="mt-2 max-w-2xl text-muted">{job.summary}</p>
+                {i === 0 && (
+                  <div className="mt-6">
+                    <p className="font-display text-sm font-semibold">{c.trajectory.productsLabel}</p>
+                    <dl className="mt-3 grid gap-3 sm:grid-cols-2">
+                      {c.work.items.map((p) => (
+                        <div key={p.name} className="rounded-2xl border border-nevoa bg-surface p-4">
+                          <dt className="font-display font-semibold">{p.name}</dt>
+                          <dd className="mt-1 text-[0.95rem]">{p.what}</dd>
+                          <dd className="mt-1 text-[0.95rem] text-muted">{p.role}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ol>
+        </Section>
+
+        <Section id="stories" title={c.stories.title} subtitle={c.stories.subtitle} tone="dark">
+          <div className="grid gap-4 lg:grid-cols-3 lg:items-start">
             {c.stories.items.map((s) => (
-              <details key={s.title} className="group rounded-2xl border border-nevoa bg-surface px-6 py-5 open:pb-6">
+              <details key={s.title} className="group rounded-3xl border border-band-line bg-white/[0.04] p-6 open:bg-white/[0.07] lg:open:col-span-3">
                 <summary className="cursor-pointer list-none">
                   <span className="flex items-start justify-between gap-4">
                     <span>
-                      <span className="block font-display text-xl font-semibold tracking-tight">{s.title}</span>
-                      <span className="mt-1 block text-muted">{s.teaser}</span>
+                      <span className="block font-display text-2xl font-semibold leading-tight tracking-tight">{s.title}</span>
+                      <span className="mt-2 block text-band-muted">{s.teaser}</span>
                     </span>
-                    <span aria-hidden className="mt-1 font-display text-2xl leading-none text-sinal transition-transform group-open:rotate-45">
+                    <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full border border-band-line font-display text-xl text-entregue transition-transform group-open:rotate-45">
                       +
                     </span>
                   </span>
                   <span className="sr-only">{c.stories.readLabel}</span>
                 </summary>
-                <div className="mt-4 space-y-3 border-t border-nevoa pt-4">
+                <div className="mt-5 max-w-3xl space-y-3 border-t border-band-line pt-5">
                   {s.story.map((p) => (
                     <p key={p.slice(0, 40)}>{p}</p>
                   ))}
-                  <p className="font-display text-sm text-muted">{s.tags.join(", ")}</p>
+                  <p className="font-display text-sm text-band-muted">{s.tags.join(", ")}</p>
                 </div>
               </details>
             ))}
           </div>
         </Section>
 
-        <Section id="experience" title={c.experience.title}>
-          <ol className="grid max-w-3xl gap-8 border-l border-nevoa pl-7">
-            {c.experience.items.map((job, i) => (
-              <li key={job.company} className="relative">
-                <span
-                  aria-hidden
-                  className={`absolute -left-[2.1rem] top-[0.45rem] h-3 w-3 rounded-full ${i === 0 ? "bg-sinal" : "border-2 border-nevoa bg-papel"}`}
-                />
-                <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-                  <h3 className="font-display text-lg font-semibold">
-                    {job.role} <span className="font-normal text-muted">· {job.company}</span>
-                  </h3>
-                  <span className="font-display text-sm text-muted">{job.period}</span>
-                </div>
-                <p className="mt-1 text-muted">{job.summary}</p>
-              </li>
+        {/* the page ends the way it started: as a conversation */}
+        <section id="contact" aria-label={c.contact.title} className="mx-auto max-w-6xl scroll-mt-16 px-5 py-20 sm:py-28">
+          <div className="flex max-w-2xl flex-col gap-3">
+            <Image src={PHOTO} alt="" width={56} height={56} className="size-14 rounded-full object-cover object-top" />
+            {c.closing.lines.map((line, i) => (
+              <p
+                key={line}
+                className={`w-fit rounded-3xl rounded-tl-md bg-surface px-5 py-3.5 shadow-sm ${i === 0 ? "font-display text-[clamp(1.5rem,3.5vw,2.4rem)] font-bold leading-tight tracking-tight" : "text-lg"}`}
+              >
+                {line}
+              </p>
             ))}
-          </ol>
-        </Section>
-
-        <Section id="contact" title={c.contact.title}>
-          <p className="max-w-xl text-lg text-muted">{c.contact.text}</p>
-          <a
-            href={`mailto:${LINKS.email}`}
-            className="mt-8 inline-block break-all font-display text-[clamp(1.4rem,4vw,2.5rem)] font-semibold tracking-tight underline decoration-sinal/40 decoration-[3px] underline-offset-[6px] hover:decoration-sinal"
-          >
-            {LINKS.email}
-          </a>
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-display font-medium">
-            <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className={link}>
-              LinkedIn
-            </a>
-            <a href={LINKS.github} target="_blank" rel="noreferrer" className={link}>
-              GitHub
-            </a>
+            <div className="mt-4 flex flex-wrap gap-3 font-display font-medium">
+              <a href={`mailto:${LINKS.email}`} className="rounded-full bg-sinal px-5 py-3 text-white transition-colors hover:bg-tinta">
+                {c.closing.email}
+              </a>
+              <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="rounded-full border border-tinta/25 px-5 py-3 hover:border-sinal hover:text-sinal">
+                LinkedIn
+              </a>
+              <a href={c.hero.cvHref} download className="rounded-full border border-tinta/25 px-5 py-3 hover:border-sinal hover:text-sinal">
+                {c.closing.cvLabel}
+              </a>
+            </div>
+            <p className="mt-3 font-display text-sm text-muted">
+              {LINKS.email} · {c.contact.location}
+            </p>
           </div>
-          <p className="mt-6 text-sm text-muted">{c.contact.location}</p>
-        </Section>
+        </section>
       </main>
 
       <footer className="mt-8 border-t border-nevoa py-8 text-center font-display text-sm text-muted">

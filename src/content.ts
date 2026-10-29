@@ -5,7 +5,11 @@ export type Lang = (typeof LANGS)[number];
 
 export const isLang = (v: string): v is Lang => (LANGS as readonly string[]).includes(v);
 
+export type ProjectId = "relay" | "helpdesk" | "store";
+
 type Project = {
+  id: ProjectId;
+  tab: string;
   name: string;
   summary: string;
   highlights: string[];
@@ -31,9 +35,24 @@ export type ChatScript = {
   labels: { typing: string; restart: string; pick: string; done: string; me: string };
 };
 
+export const NODE_IDS = ["whatsapp", "payments", "webhook", "queue", "ai", "database", "panel"] as const;
+export type NodeId = (typeof NODE_IDS)[number];
+export type MapNode = { label: string; sub: string; what: string; did: string[]; links: ChatLink[] };
+
+// Texts shown inside the animated project previews.
+export type Previews = {
+  relay: { business: string; customer1: string; ai1: string; customer2: string; handoff: string; agent: string };
+  helpdesk: { ticket: string; urgent: string; open: string; progress: string; resolved: string; assigned: string; note: string; due: string; onTime: string; queue: string[]; high: string };
+  store: { product: string; price: string; buy: string; cart: string; pix: string; waiting: string; approved: string; order: string };
+};
+
 type Content = {
   meta: { title: string; description: string };
-  nav: { projects: string; work: string; stories: string; contact: string };
+  nav: { map: string; projects: string; path: string; stories: string; contact: string };
+  map: { title: string; subtitle: string; hint: string; didLabel: string; nodes: Record<NodeId, MapNode> };
+  previews: Previews;
+  trajectory: { title: string; subtitle: string; productsLabel: string };
+  closing: { lines: string[]; email: string; cvLabel: string };
   hero: { name: string; role: string; intro: string; cv: string; cvHref: string; available: string; photoAlt: string };
   chat: ChatScript;
   projects: { title: string; subtitle: string; repoLabel: string; demoLabel: string; moreLabel: string; items: Project[] };
@@ -75,7 +94,107 @@ export const CONTENT: Record<Lang, Content> = {
       title: "Vinícius Fontanella Kleis — Desenvolvedor Full Stack",
       description: "Desenvolvedor full stack em Joinville/SC. Faço sistemas que conversam com clientes, pagamentos e IA.",
     },
-    nav: { projects: "Projetos", work: "No trabalho", stories: "Histórias", contact: "Contato" },
+    nav: { map: "Como eu construo", projects: "Projetos", path: "Trajetória", stories: "Histórias", contact: "Contato" },
+    map: {
+      title: "Como eu construo",
+      subtitle: "Os sistemas em que trabalho são peças que conversam entre si. Clique numa peça para ver o que eu fiz com ela.",
+      hint: "Escolha uma peça do mapa",
+      didLabel: "O que eu fiz",
+      nodes: {
+        whatsapp: {
+          label: "WhatsApp e Meta",
+          sub: "onde o cliente está",
+          what: "As mensagens dos clientes chegam e saem pela API oficial do WhatsApp. Também integro Instagram e anúncios da Meta.",
+          did: ["Integração com a API oficial do WhatsApp no Relay e no CRM da empresa", "Coleta de métricas do Instagram e a revisão do app pela Meta"],
+          links: [{ label: "Ver o Relay", href: "#p-relay" }, { label: "História das métricas", href: "#stories" }],
+        },
+        payments: {
+          label: "Pagamentos",
+          sub: "Stripe e Mercado Pago",
+          what: "Cobrança de assinaturas e checkout. O pagamento confirma por webhook, nunca pelo que o navegador diz.",
+          did: ["Assinaturas com Stripe nos produtos da empresa", "Loja com Pix, cartão e boleto, com o preço sempre validado no servidor"],
+          links: [{ label: "Ver a loja", href: "#p-store" }],
+        },
+        webhook: {
+          label: "Webhooks",
+          sub: "a porta de entrada",
+          what: "É por aqui que outros sistemas avisam que algo aconteceu: chegou mensagem, um pagamento foi aprovado.",
+          did: ["Assinatura conferida em cada chamada, para garantir que veio de quem diz", "Achei e corrigi a regra que fazia a IA de uma clínica parar de responder"],
+          links: [{ label: "Ler a história", href: "#stories" }],
+        },
+        queue: {
+          label: "Fila",
+          sub: "trabalho em segundo plano",
+          what: "O webhook responde na hora e o trabalho pesado fica para depois. Se algo falhar, tenta de novo sozinho.",
+          did: ["Fila dentro do próprio PostgreSQL no Relay, sem mensagem duplicada", "Respostas agrupadas quando o cliente manda várias mensagens seguidas"],
+          links: [{ label: "Ver o Relay", href: "#p-relay" }],
+        },
+        ai: {
+          label: "IA",
+          sub: "Claude e OpenAI",
+          what: "Agentes que atendem clientes de verdade. Eles respondem só com o que a empresa ensinou e sabem a hora de chamar uma pessoa.",
+          did: ["Agentes de IA atendendo no WhatsApp em produção", "Base de conhecimento (RAG) no Relay", "IA que sugere categoria e resposta no HelpDesk"],
+          links: [{ label: "Ver o Relay", href: "#p-relay" }, { label: "Ver o HelpDesk", href: "#p-helpdesk" }],
+        },
+        database: {
+          label: "Banco de dados",
+          sub: "PostgreSQL e Supabase",
+          what: "Onde tudo fica guardado. Cada empresa só enxerga os próprios dados, e os relatórios são calculados direto no banco.",
+          did: ["Separação entre empresas no HelpDesk e no CRM", "Relatórios e painéis calculados no PostgreSQL", "Migração de 7 mil alunos de outra plataforma"],
+          links: [{ label: "Ver o HelpDesk", href: "#p-helpdesk" }, { label: "Ler as histórias", href: "#stories" }],
+        },
+        panel: {
+          label: "Painel da equipe",
+          sub: "React e TypeScript",
+          what: "As telas que a equipe usa no dia a dia, atualizando ao vivo.",
+          did: ["Caixa de entrada que atualiza sozinha no Relay", "Painéis de prazo e de carga por atendente no HelpDesk"],
+          links: [{ label: "Testar o HelpDesk", href: LINKS.helpdeskDemo }],
+        },
+      },
+    },
+    previews: {
+      relay: {
+        business: "Clínica Aurora",
+        customer1: "Vocês abrem no sábado?",
+        ai1: "Abrimos sim, das 9h às 13h.",
+        customer2: "Quero marcar uma limpeza",
+        handoff: "Passou para a equipe",
+        agent: "Oi! Tenho terça às 10h, pode ser?",
+      },
+      helpdesk: {
+        ticket: "Internet caiu no escritório",
+        urgent: "Urgente",
+        open: "Aberto",
+        progress: "Em andamento",
+        resolved: "Resolvido",
+        assigned: "Ana assumiu",
+        note: "Fibra rompida na rua. Técnico chega às 11h.",
+        due: "vence em",
+        onTime: "resolvido no prazo",
+        queue: ["Cobrado duas vezes na fatura", "E-mail de senha não chega"],
+        high: "Alta",
+      },
+      store: {
+        product: "Luminária com carregador",
+        price: "R$ 149,90",
+        buy: "Comprar",
+        cart: "Carrinho",
+        pix: "Pagar com Pix",
+        waiting: "Aguardando pagamento",
+        approved: "Pagamento aprovado",
+        order: "Pedido QU-3F9A1C2B",
+      },
+    },
+    trajectory: {
+      title: "Trajetória",
+      subtitle: "Do banco de dados até a tela.",
+      productsLabel: "Produtos em que trabalho hoje",
+    },
+    closing: {
+      lines: ["Chegou até aqui? Então vamos conversar.", "Estou aberto a vagas full stack, remotas ou híbridas, e a projetos freelance."],
+      email: "Mandar e-mail",
+      cvLabel: "Currículo (PDF)",
+    },
     hero: {
       name: "Vinícius Fontanella Kleis",
       role: "Desenvolvedor full stack",
@@ -188,6 +307,8 @@ export const CONTENT: Record<Lang, Content> = {
       moreLabel: "Mais detalhes",
       items: [
         {
+          id: "relay",
+          tab: "Relay",
           name: "Relay: agente de IA para WhatsApp",
           summary: "Responde o WhatsApp de uma empresa pela base de conhecimento dela e passa a conversa para uma pessoa quando não sabe ajudar.",
           highlights: ["A equipe vê tudo ao vivo e pode assumir a qualquer momento", "Tem um celular simulado: dá para testar sem conta do WhatsApp"],
@@ -202,6 +323,8 @@ export const CONTENT: Record<Lang, Content> = {
           images: relayImages,
         },
         {
+          id: "helpdesk",
+          tab: "HelpDesk",
           name: "HelpDesk",
           summary: "Sistema de chamados para várias empresas, com prazos de SLA e uma IA que sugere categoria, prioridade e primeira resposta.",
           highlights: ["Cada empresa só enxerga os próprios dados", "Conversa com o cliente, notas internas e histórico de quem mudou o quê"],
@@ -216,6 +339,8 @@ export const CONTENT: Record<Lang, Content> = {
           images: helpdeskImages,
         },
         {
+          id: "store",
+          tab: "Loja",
           name: "Loja com Mercado Pago",
           summary: "Loja virtual feita em um dia: catálogo, carrinho e checkout com Pix, cartão e boleto.",
           highlights: ["O preço é sempre lido no servidor, nunca do navegador", "O aviso de pagamento tem a assinatura conferida"],
@@ -296,7 +421,107 @@ export const CONTENT: Record<Lang, Content> = {
       title: "Vinícius Fontanella Kleis — Full Stack Developer",
       description: "Full stack developer in Brazil. I build systems that talk to customers, payments and AI.",
     },
-    nav: { projects: "Projects", work: "At work", stories: "Stories", contact: "Contact" },
+    nav: { map: "How I build", projects: "Projects", path: "Path", stories: "Stories", contact: "Contact" },
+    map: {
+      title: "How I build",
+      subtitle: "The systems I work on are pieces that talk to each other. Click a piece to see what I did with it.",
+      hint: "Pick a piece of the map",
+      didLabel: "What I did",
+      nodes: {
+        whatsapp: {
+          label: "WhatsApp and Meta",
+          sub: "where customers are",
+          what: "Customer messages come in and go out through the official WhatsApp API. I also integrate Instagram and Meta ads.",
+          did: ["Official WhatsApp API integration in Relay and in the company CRM", "Instagram metrics collection and Meta's app review"],
+          links: [{ label: "See Relay", href: "#p-relay" }, { label: "The metrics story", href: "#stories" }],
+        },
+        payments: {
+          label: "Payments",
+          sub: "Stripe and Mercado Pago",
+          what: "Subscription billing and checkout. Payment is confirmed by webhook, never by what the browser says.",
+          did: ["Stripe subscriptions in the company's products", "A store with Pix, card and boleto, with prices always checked on the server"],
+          links: [{ label: "See the store", href: "#p-store" }],
+        },
+        webhook: {
+          label: "Webhooks",
+          sub: "the front door",
+          what: "This is how other systems say something happened: a message arrived, a payment was approved.",
+          did: ["The signature is checked on every call, to make sure it came from who it claims", "Found and fixed the rule that made a clinic's AI stop answering"],
+          links: [{ label: "Read the story", href: "#stories" }],
+        },
+        queue: {
+          label: "Queue",
+          sub: "background work",
+          what: "The webhook answers right away and the heavy work happens later. If something fails, it retries on its own.",
+          did: ["A queue inside PostgreSQL in Relay, with no duplicate messages", "Replies grouped when a customer sends several messages in a row"],
+          links: [{ label: "See Relay", href: "#p-relay" }],
+        },
+        ai: {
+          label: "AI",
+          sub: "Claude and OpenAI",
+          what: "Agents that answer real customers. They only use what the business taught them and know when to call a person.",
+          did: ["AI agents answering on WhatsApp in production", "A knowledge base (RAG) in Relay", "AI suggesting category and reply in HelpDesk"],
+          links: [{ label: "See Relay", href: "#p-relay" }, { label: "See HelpDesk", href: "#p-helpdesk" }],
+        },
+        database: {
+          label: "Database",
+          sub: "PostgreSQL and Supabase",
+          what: "Where everything is stored. Each company only sees its own data, and reports are computed right in the database.",
+          did: ["Separation between companies in HelpDesk and the CRM", "Reports and dashboards computed in PostgreSQL", "Migrating 7,000 students from another platform"],
+          links: [{ label: "See HelpDesk", href: "#p-helpdesk" }, { label: "Read the stories", href: "#stories" }],
+        },
+        panel: {
+          label: "Team dashboard",
+          sub: "React and TypeScript",
+          what: "The screens the team uses every day, updating live.",
+          did: ["An inbox that updates on its own in Relay", "Deadline and workload dashboards in HelpDesk"],
+          links: [{ label: "Try HelpDesk", href: LINKS.helpdeskDemo }],
+        },
+      },
+    },
+    previews: {
+      relay: {
+        business: "Aurora Clinic",
+        customer1: "Are you open on Saturday?",
+        ai1: "We are, from 9am to 1pm.",
+        customer2: "I'd like to book a cleaning",
+        handoff: "Handed to the team",
+        agent: "Hi! I have Tuesday at 10am, does that work?",
+      },
+      helpdesk: {
+        ticket: "Internet down at the office",
+        urgent: "Urgent",
+        open: "Open",
+        progress: "In progress",
+        resolved: "Resolved",
+        assigned: "Ana took it",
+        note: "Fiber cut on the street. Technician arrives at 11am.",
+        due: "due in",
+        onTime: "resolved on time",
+        queue: ["Charged twice on the invoice", "Password e-mail never arrives"],
+        high: "High",
+      },
+      store: {
+        product: "Lamp with wireless charger",
+        price: "R$ 149.90",
+        buy: "Buy",
+        cart: "Cart",
+        pix: "Pay with Pix",
+        waiting: "Waiting for payment",
+        approved: "Payment approved",
+        order: "Order QU-3F9A1C2B",
+      },
+    },
+    trajectory: {
+      title: "Path",
+      subtitle: "From the database to the screen.",
+      productsLabel: "Products I work on today",
+    },
+    closing: {
+      lines: ["Made it this far? Then let's talk.", "I'm open to full stack roles, remote or hybrid, and freelance projects."],
+      email: "Send an e-mail",
+      cvLabel: "Resume (PDF)",
+    },
     hero: {
       name: "Vinícius Fontanella Kleis",
       role: "Full stack developer",
@@ -409,6 +634,8 @@ export const CONTENT: Record<Lang, Content> = {
       moreLabel: "More details",
       items: [
         {
+          id: "relay",
+          tab: "Relay",
           name: "Relay: WhatsApp AI agent",
           summary: "Answers a business's WhatsApp from its own knowledge base and hands the conversation to a person when it can't help.",
           highlights: ["The team sees everything live and can take over at any moment", "Comes with a simulated phone, so you can try it without WhatsApp"],
@@ -423,6 +650,8 @@ export const CONTENT: Record<Lang, Content> = {
           images: relayImages,
         },
         {
+          id: "helpdesk",
+          tab: "HelpDesk",
           name: "HelpDesk",
           summary: "A ticket system for many companies, with SLA deadlines and an AI that suggests category, priority and a first reply.",
           highlights: ["Each company only sees its own data", "Customer replies, internal notes and a history of who changed what"],
@@ -437,6 +666,8 @@ export const CONTENT: Record<Lang, Content> = {
           images: helpdeskImages,
         },
         {
+          id: "store",
+          tab: "Store",
           name: "Online store with Mercado Pago",
           summary: "A storefront built in one day: catalog, cart and checkout with Pix, card and boleto.",
           highlights: ["Prices are always read on the server, never from the browser", "Payment notifications have their signature checked"],
