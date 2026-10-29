@@ -2,8 +2,9 @@ import Image from "next/image";
 import type { CONTENT } from "@/content";
 
 type Project = (typeof CONTENT)["pt"]["projects"]["items"][number];
+type Labels = { repoLabel: string; demoLabel: string; moreLabel: string };
 
-export function ProjectCard({ project, repoLabel, demoLabel }: { project: Project; repoLabel: string; demoLabel: string }) {
+export function ProjectCard({ project, labels }: { project: Project; labels: Labels }) {
   const [cover, ...rest] = project.images;
   return (
     <article className="grid gap-8 lg:grid-cols-[7fr_5fr] lg:gap-12">
@@ -34,31 +35,46 @@ export function ProjectCard({ project, repoLabel, demoLabel }: { project: Projec
       <div>
         <h3 className="font-display text-2xl font-semibold tracking-tight">{project.name}</h3>
         <p className="mt-3 text-lg">{project.summary}</p>
-        <ul className="mt-6 space-y-3 border-l-2 border-sinal/30 pl-5 text-[0.98rem] text-muted">
+        <ul className="mt-5 space-y-2 border-l-2 border-sinal/30 pl-5 text-muted">
           {project.highlights.map((h) => (
             <li key={h}>{h}</li>
           ))}
         </ul>
-        <p className="mt-6 font-display text-sm text-muted">{project.stack.join(", ")}</p>
+
+        {/* the technical detail stays one click away instead of crowding the card */}
+        <details className="group mt-5">
+          <summary className="cursor-pointer list-none font-display text-sm font-medium text-sinal hover:underline">
+            <span className="inline-block transition-transform group-open:rotate-90" aria-hidden>
+              ›
+            </span>{" "}
+            {labels.moreLabel}
+          </summary>
+          <ul className="mt-3 space-y-2 text-[0.98rem] text-muted">
+            {project.more.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
+          <p className="mt-3 font-display text-sm text-muted">{project.stack.join(", ")}</p>
+        </details>
+
         <div className="mt-7 flex flex-wrap gap-3 font-display text-sm font-medium">
+          {project.demo && (
+            <a href={project.demo} target="_blank" rel="noreferrer" className="rounded-lg bg-tinta px-4 py-2.5 text-papel transition-colors hover:bg-sinal">
+              {labels.demoLabel}
+            </a>
+          )}
           <a
             href={project.repo}
             target="_blank"
             rel="noreferrer"
-            className="rounded-lg bg-tinta px-4 py-2.5 text-papel transition-colors hover:bg-sinal"
+            className={
+              project.demo
+                ? "rounded-lg border border-tinta/25 px-4 py-2.5 transition-colors hover:border-sinal hover:text-sinal"
+                : "rounded-lg bg-tinta px-4 py-2.5 text-papel transition-colors hover:bg-sinal"
+            }
           >
-            {repoLabel}
+            {labels.repoLabel}
           </a>
-          {project.demo && (
-            <a
-              href={project.demo}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-lg border border-tinta/25 px-4 py-2.5 transition-colors hover:border-sinal hover:text-sinal"
-            >
-              {demoLabel}
-            </a>
-          )}
         </div>
       </div>
     </article>

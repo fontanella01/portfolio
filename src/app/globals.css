@@ -79,13 +79,16 @@ body {
   animation-delay: var(--d);
 }
 
-.chat-typing span {
+.chat-typing span,
+.chat-typing-live span {
   animation: chat-dot 900ms ease-in-out infinite;
 }
-.chat-typing span:nth-child(2) {
+.chat-typing span:nth-child(2),
+.chat-typing-live span:nth-child(2) {
   animation-delay: 150ms;
 }
-.chat-typing span:nth-child(3) {
+.chat-typing span:nth-child(3),
+.chat-typing-live span:nth-child(3) {
   animation-delay: 300ms;
 }
 
@@ -146,7 +149,8 @@ body {
   }
   .chat-item,
   .chat-ticks,
-  .chat-typing span {
+  .chat-typing span,
+  .chat-typing-live span {
     animation: none;
   }
   .chat-ticks {

@@ -9,44 +9,37 @@ type Project = {
   name: string;
   summary: string;
   highlights: string[];
+  more: string[];
   stack: string[];
   repo: string;
   demo?: string;
   images: { src: string; alt: string }[];
 };
 
-type CaseStudy = {
-  title: string;
-  context: string;
-  problem: string;
-  solution: string;
-  result: string;
-  tags: string[];
+type Story = { title: string; teaser: string; story: string[]; tags: string[] };
+type Job = { role: string; company: string; period: string; summary: string };
+type Product = { name: string; what: string; role: string };
+
+export type ChatLink = { label: string; href: string };
+// One topic of the conversation: the question the visitor taps, my answer in short
+// messages, optional links, and the topics that open up after it.
+export type ChatTopic = { q: string; a: string[]; links?: ChatLink[]; next?: string[] };
+export type ChatScript = {
+  intro: string[];
+  start: string[];
+  topics: Record<string, ChatTopic>;
+  labels: { typing: string; restart: string; pick: string; done: string; me: string };
 };
-
-type Job = { role: string; company: string; period: string; items: string[] };
-
-type Product = { name: string; what: string; role: string; stack: string[] };
-
-export type ChatLine = { from: "in" | "out" | "event"; text: string; time?: string };
 
 type Content = {
   meta: { title: string; description: string };
-  nav: { projects: string; work: string; cases: string; experience: string; contact: string };
-  hero: {
-    name: string;
-    headline: string;
-    summary: string;
-    cv: string;
-    cvHref: string;
-    available: string;
-    chat: { contact: string; status: string; lines: ChatLine[]; caption: string };
-  };
-  projects: { title: string; subtitle: string; repoLabel: string; demoLabel: string; items: Project[] };
-  work: { title: string; subtitle: string; roleLabel: string; items: Product[] };
-  cases: { title: string; subtitle: string; labels: { problem: string; solution: string; result: string }; items: CaseStudy[] };
+  nav: { projects: string; work: string; stories: string; contact: string };
+  hero: { name: string; role: string; intro: string; cv: string; cvHref: string; available: string; photoAlt: string };
+  chat: ChatScript;
+  projects: { title: string; subtitle: string; repoLabel: string; demoLabel: string; moreLabel: string; items: Project[] };
+  work: { title: string; subtitle: string; items: Product[] };
+  stories: { title: string; subtitle: string; readLabel: string; items: Story[] };
   experience: { title: string; items: Job[] };
-  stack: { title: string; groups: [string, string][] };
   contact: { title: string; text: string; location: string };
   switchLang: string;
 };
@@ -55,6 +48,8 @@ const LINKS = {
   github: "https://github.com/fontanella01",
   linkedin: "https://www.linkedin.com/in/vinicius-fontanella",
   email: "fontanella.vinicius@gmail.com",
+  relayDemo: "https://relay-whatsapp-ai-agent.onrender.com",
+  helpdeskDemo: "https://helpdesk-demo-l6j8.onrender.com",
 };
 export { LINKS };
 
@@ -78,78 +73,158 @@ export const CONTENT: Record<Lang, Content> = {
   pt: {
     meta: {
       title: "Vinícius Fontanella Kleis — Desenvolvedor Full Stack",
-      description:
-        "Desenvolvedor full stack em Joinville/SC: React, TypeScript, Node, PostgreSQL/Supabase, integrações com a Meta e agentes de IA.",
+      description: "Desenvolvedor full stack em Joinville/SC. Faço sistemas que conversam com clientes, pagamentos e IA.",
     },
-    nav: { projects: "Projetos", work: "No trabalho", cases: "Estudos de caso", experience: "Experiência", contact: "Contato" },
+    nav: { projects: "Projetos", work: "No trabalho", stories: "Histórias", contact: "Contato" },
     hero: {
       name: "Vinícius Fontanella Kleis",
-      headline: "Desenvolvedor full stack. Faço sistemas que conversam com clientes, pagamentos e IA.",
-      summary:
-        "Construo e mantenho produtos SaaS de ponta a ponta: do banco de dados (PostgreSQL com RLS) às telas em React e TypeScript, passando por APIs, webhooks, integrações com WhatsApp e Meta e agentes de IA em produção.",
+      role: "Desenvolvedor full stack",
+      intro: "Faço sistemas que conversam com clientes, pagamentos e IA. Em vez de um texto longo sobre mim, pergunte o que te interessa aqui do lado.",
       cv: "Baixar currículo",
       cvHref: "/cv/curriculo-vinicius-fontanella-kleis.pdf",
       available: "Aberto a novas oportunidades",
-      chat: {
-        contact: "Clínica Aurora",
-        status: "agente de IA ativo",
-        lines: [
-          { from: "in", text: "Oi! Vocês atendem no sábado?", time: "09:41" },
-          { from: "event", text: "Webhook recebido, agente de IA respondendo" },
-          { from: "out", text: "Atendemos sim, das 9h às 13h. Quer que eu reserve um horário?", time: "09:41" },
-          { from: "in", text: "Quero, às 10h", time: "09:42" },
-          { from: "event", text: "Horário gravado na agenda" },
-          { from: "out", text: "Pronto! Sábado às 10h está reservado para você.", time: "09:42" },
-        ],
-        caption: "Simulação de um agente de IA atendendo pelo WhatsApp, como os que eu mantenho em produção.",
+      photoAlt: "Foto de Vinícius",
+    },
+    chat: {
+      intro: ["Oi! Eu sou o Vinícius 👋", "Escolhe uma pergunta e eu te conto. Pode ir por onde quiser."],
+      start: ["about", "projects", "hardest", "work", "hire"],
+      topics: {
+        about: {
+          q: "Como você chegou na programação?",
+          a: [
+            "Comecei com Python aos 23, praticando no dia a dia.",
+            "Meu primeiro emprego na área foi um estágio cuidando de bancos Oracle. Depois fui para planejamento operacional, onde automatizava processos e montava dashboards no Power BI.",
+            "Desde junho de 2026 sou dev full stack. Fui do dado até a tela.",
+          ],
+          next: ["stack", "work"],
+        },
+        work: {
+          q: "Onde você trabalha hoje?",
+          a: [
+            "Sou dev full stack PJ na Volúpia Digital / Infoprotect.",
+            "Trabalho em quatro produtos SaaS que estão no ar: um CRM com IA atendendo no WhatsApp, uma plataforma para agências integrada à Meta, uma plataforma de cursos e uma de conteúdo para blogs.",
+          ],
+          links: [{ label: "Ver os produtos", href: "#work" }],
+          next: ["hardest", "stack"],
+        },
+        projects: {
+          q: "O que você já construiu?",
+          a: [
+            "Tenho três projetos abertos no GitHub, e dá para testar dois deles agora.",
+            "O Relay é um agente de IA para WhatsApp: responde pela base de conhecimento da empresa e chama uma pessoa quando não sabe.",
+            "O HelpDesk é um sistema de chamados para várias empresas, com prazos de SLA e IA ajudando na triagem.",
+            "E tem uma loja com Mercado Pago, com Pix, cartão e boleto.",
+          ],
+          links: [
+            { label: "Testar o Relay", href: LINKS.relayDemo },
+            { label: "Ver os projetos", href: "#projects" },
+          ],
+          next: ["relay", "hardest"],
+        },
+        relay: {
+          q: "Como o Relay funciona por dentro?",
+          a: [
+            "A mensagem chega pelo webhook do WhatsApp e entra numa fila no PostgreSQL. Assim o webhook responde rápido e nada se perde se algo falhar.",
+            "A IA só recebe os trechos da base de conhecimento que respondem à pergunta, e não pode inventar.",
+            "Se o cliente pede uma pessoa, quer agendar ou pergunta algo fora da base, a conversa vai para a equipe, que acompanha tudo ao vivo.",
+          ],
+          links: [{ label: "Código no GitHub", href: `${LINKS.github}/whatsapp-ai-agent` }],
+          next: ["stack", "hire"],
+        },
+        hardest: {
+          q: "Qual o problema mais difícil que você resolveu?",
+          a: [
+            "Uma clínica que usa nosso CRM ficou sem respostas da IA de um dia para o outro. Quase toda conversa nova era pausada em segundos.",
+            "Fui nos dados de produção e achei a causa: o sistema de agendamento da clínica mandava mensagens automáticas pelo mesmo número, e elas eram gravadas como se um atendente tivesse assumido.",
+            "Ajustei a regra, testei com as mensagens reais e reativei as conversas. A IA voltou de 2 a 6 respostas por dia para mais de 150.",
+          ],
+          links: [{ label: "Mais histórias", href: "#stories" }],
+          next: ["more", "work"],
+        },
+        more: {
+          q: "Tem outra história?",
+          a: [
+            "Tenho! Na plataforma para agências, a coleta de métricas do Instagram parou em silêncio depois de uma mudança na API da Meta. Isolei cada chamada para uma falha não derrubar o resto, e depois conduzi a revisão do app pela Meta.",
+            "E numa plataforma de cursos, migrei uns 7 mil alunos de outro sistema, conferindo os dados antes e depois da virada.",
+          ],
+          links: [{ label: "Ler as histórias", href: "#stories" }],
+          next: ["hire"],
+        },
+        stack: {
+          q: "Com que tecnologias você trabalha?",
+          a: [
+            "No dia a dia: React e TypeScript na tela, Node.js e PostgreSQL (muito via Supabase) no servidor.",
+            "Integro bastante com APIs de fora: WhatsApp, Instagram e anúncios da Meta, Mercado Pago, Stripe e nota fiscal.",
+            "E uso IA (Claude e OpenAI) dentro dos produtos e no meu jeito de trabalhar.",
+          ],
+          next: ["projects", "hire"],
+        },
+        hire: {
+          q: "Como falo com você?",
+          a: [
+            "Estou aberto a vagas full stack, remotas ou híbridas, e a projetos freelance. Falo inglês avançado.",
+            "O jeito mais rápido é por e-mail. Também respondo no LinkedIn.",
+          ],
+          links: [
+            { label: "Mandar e-mail", href: `mailto:${LINKS.email}` },
+            { label: "LinkedIn", href: LINKS.linkedin },
+            { label: "Currículo (PDF)", href: "/cv/curriculo-vinicius-fontanella-kleis.pdf" },
+          ],
+        },
+      },
+      labels: {
+        typing: "digitando…",
+        restart: "Recomeçar a conversa",
+        pick: "Perguntas",
+        done: "Você viu tudo! Se quiser, desce a página para ver os projetos com calma.",
+        me: "Vinícius",
       },
     },
     projects: {
       title: "Projetos",
-      subtitle: "Projetos pessoais com código aberto no GitHub.",
+      subtitle: "Feitos por mim, com código aberto no GitHub.",
       repoLabel: "Código",
-      demoLabel: "Ver online",
+      demoLabel: "Testar ao vivo",
+      moreLabel: "Mais detalhes",
       items: [
         {
           name: "Relay: agente de IA para WhatsApp",
-          summary:
-            "Agente que responde o WhatsApp de uma empresa a partir da base de conhecimento dela e passa a conversa para um atendente quando não consegue ajudar. A equipe acompanha tudo ao vivo e pode assumir a qualquer momento.",
-          highlights: [
-            "RAG com busca textual do PostgreSQL: a IA recebe só os trechos que respondem à pergunta e é instruída a não inventar",
-            "Passa para humano quando o cliente pede, quer agendar, cancelar, reclamar ou pergunta algo fora da base",
-            "Webhook da API oficial do WhatsApp com assinatura verificada; fila no próprio PostgreSQL com novas tentativas e sem mensagem duplicada",
-            "Caixa de entrada em tempo real (SSE) e um simulador de celular para testar sem conta do WhatsApp; 36 testes, CI e Docker",
+          summary: "Responde o WhatsApp de uma empresa pela base de conhecimento dela e passa a conversa para uma pessoa quando não sabe ajudar.",
+          highlights: ["A equipe vê tudo ao vivo e pode assumir a qualquer momento", "Tem um celular simulado: dá para testar sem conta do WhatsApp"],
+          more: [
+            "A IA recebe só os trechos da base que respondem à pergunta e é instruída a não inventar.",
+            "Webhook oficial do WhatsApp com assinatura conferida, fila no PostgreSQL com novas tentativas e sem mensagem duplicada.",
+            "Testes automáticos, CI e Docker.",
           ],
-          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Claude API", "WhatsApp Cloud API", "SSE", "Docker"],
+          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Claude API", "WhatsApp Cloud API"],
           repo: `${LINKS.github}/whatsapp-ai-agent`,
+          demo: LINKS.relayDemo,
           images: relayImages,
         },
         {
           name: "HelpDesk",
-          summary:
-            "Sistema de chamados multiempresa com prazos de SLA e um assistente de IA que sugere categoria, prioridade e primeira resposta.",
-          highlights: [
-            "Cada empresa tem seu espaço; toda consulta é filtrada pela organização do usuário",
-            "SLA por prioridade, que para quando o chamado é resolvido e volta se for reaberto",
-            "Conversa com o cliente, notas internas, responsável por chamado e histórico de quem mudou o quê",
-            "Triagem com a API do Claude: o atendente revisa antes de aplicar, nada é enviado sozinho",
-            "Testes automatizados e CI; PostgreSQL rodando em WebAssembly nos testes",
+          summary: "Sistema de chamados para várias empresas, com prazos de SLA e uma IA que sugere categoria, prioridade e primeira resposta.",
+          highlights: ["Cada empresa só enxerga os próprios dados", "Conversa com o cliente, notas internas e histórico de quem mudou o quê"],
+          more: [
+            "O prazo para quando o chamado é resolvido e volta se ele for reaberto.",
+            "A IA só sugere: o atendente revisa antes de aplicar, nada é enviado sozinho.",
+            "Testes automáticos e CI, com um PostgreSQL de verdade rodando nos testes.",
           ],
-          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Drizzle ORM", "Zod", "Vitest", "Claude API"],
+          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Drizzle ORM", "Claude API"],
           repo: `${LINKS.github}/helpdesk`,
+          demo: LINKS.helpdeskDemo,
           images: helpdeskImages,
         },
         {
           name: "Loja com Mercado Pago",
-          summary:
-            "Loja virtual completa feita em um dia: catálogo, carrinho, checkout com Pix, cartão e boleto e as páginas legais exigidas no Brasil.",
-          highlights: [
-            "Funções serverless no Cloudflare Pages criam o pagamento no Mercado Pago",
-            "Preços lidos só no servidor: corrigi uma falha em que o navegador podia definir o próprio preço",
-            "Webhook que confere a assinatura do Mercado Pago e consulta o pagamento na API, sem confiar no que chega na notificação",
-            "Testes automáticos de preço e de assinatura rodando no GitHub Actions; sem dependências nem etapa de build",
+          summary: "Loja virtual feita em um dia: catálogo, carrinho e checkout com Pix, cartão e boleto.",
+          highlights: ["O preço é sempre lido no servidor, nunca do navegador", "O aviso de pagamento tem a assinatura conferida"],
+          more: [
+            "Funções serverless no Cloudflare Pages criam o pagamento no Mercado Pago.",
+            "Corrigi uma falha da primeira versão, em que dava para editar a requisição e pagar o preço que quisesse.",
+            "Testes automáticos de preço e de assinatura no GitHub Actions.",
           ],
-          stack: ["HTML", "CSS", "JavaScript", "Cloudflare Pages Functions", "Mercado Pago", "node:test"],
+          stack: ["JavaScript", "Cloudflare Pages Functions", "Mercado Pago"],
           repo: `${LINKS.github}/online-store-mercadopago`,
           images: storeImages,
         },
@@ -157,107 +232,56 @@ export const CONTENT: Record<Lang, Content> = {
     },
     work: {
       title: "No trabalho",
-      subtitle: "Produtos SaaS em produção em que trabalho hoje. O código é privado; os estudos de caso abaixo contam alguns problemas que resolvi neles.",
-      roleLabel: "Meu papel",
+      subtitle: "Produtos em produção em que trabalho hoje. O código é da empresa, então conto o que eu faço em cada um.",
       items: [
-        {
-          name: "Plotado",
-          what: "CRM multiempresa para pequenos negócios, com atendimento pelo WhatsApp, agentes de IA respondendo clientes e assinaturas pelo Stripe.",
-          role: "Agentes de IA e regras de atendimento, webhooks do WhatsApp, cobrança, banco de dados e sustentação com análise de causa raiz.",
-          stack: ["React", "TypeScript", "Supabase", "Edge Functions", "Stripe", "LLM"],
-        },
-        {
-          name: "X-Flow",
-          what: "Plataforma de gestão para agências de marketing que reúne clientes, tarefas e as contas de Facebook, Instagram e anúncios.",
-          role: "Integração com as APIs da Meta (Graph e Marketing API), coleta de métricas e a revisão do app pela Meta.",
-          stack: ["React", "TypeScript", "Supabase", "Meta Graph API", "OAuth"],
-        },
-        {
-          name: "FastBlog",
-          what: "Plataforma que gera e publica conteúdo de blog para empresas, com planos por assinatura.",
-          role: "Pagamentos, notas fiscais de serviço e manutenção das funções de backend.",
-          stack: ["React", "TypeScript", "Supabase", "Stripe"],
-        },
-        {
-          name: "EngraxaMente",
-          what: "Plataforma de cursos online com área do aluno, provas, certificados e trilhas de estudo sugeridas por IA.",
-          role: "Painéis de engajamento e relatórios calculados no banco, certificados, provas, assistente e trilhas com IA e a migração dos alunos da plataforma antiga.",
-          stack: ["React", "TypeScript", "Supabase", "PostgreSQL", "LLM"],
-        },
+        { name: "Plotado", what: "CRM para pequenos negócios, com IA atendendo clientes no WhatsApp.", role: "Agentes de IA, webhooks do WhatsApp, cobrança e banco de dados." },
+        { name: "X-Flow", what: "Gestão para agências de marketing, ligada ao Facebook, Instagram e anúncios.", role: "Integração com as APIs da Meta e a revisão do app pela Meta." },
+        { name: "EngraxaMente", what: "Plataforma de cursos com provas, certificados e trilhas sugeridas por IA.", role: "Painéis e relatórios, certificados, IA e a migração dos alunos." },
+        { name: "FastBlog", what: "Plataforma que gera e publica conteúdo de blog para empresas.", role: "Pagamentos, notas fiscais e funções de backend." },
       ],
     },
-    cases: {
-      title: "Estudos de caso",
-      subtitle: "Problemas reais que resolvi no trabalho, contados sem dados de clientes.",
-      labels: { problem: "Problema", solution: "Solução", result: "Resultado" },
+    stories: {
+      title: "Histórias",
+      subtitle: "Problemas reais que resolvi, sem dados de clientes.",
+      readLabel: "Ler a história",
       items: [
         {
-          title: "O agente de IA que parava de responder",
-          context: "CRM SaaS multiempresa com agente de IA atendendo clientes de uma clínica pelo WhatsApp.",
-          problem:
-            "Desde um dia específico, quase 100% das conversas novas eram pausadas segundos depois de abertas e a IA deixou de responder.",
-          solution:
-            "Investiguei pelos dados de produção e descobri que o sistema de agendamento da clínica mandava mensagens automáticas pelo mesmo número, gravadas como se fossem de um atendente humano. Ajustei a regra no webhook (Edge Function), cobri com testes usando as mensagens reais, liguei a correção só para esse cliente e reativei as conversas afetadas.",
-          result: "As respostas da IA passaram de 2–6 para mais de 150 por dia, sem atropelar atendentes de verdade.",
-          tags: ["Supabase", "Edge Functions", "Webhooks", "LLM", "Testes"],
+          title: "A IA que parou de responder",
+          teaser: "De um dia para o outro, quase toda conversa de uma clínica era pausada em segundos.",
+          story: [
+            "Uma clínica usa nosso CRM com uma IA respondendo os pacientes no WhatsApp. Um dia, as respostas praticamente sumiram: a IA mandava 2 a 6 mensagens por dia, quando o normal era mais de cem.",
+            "Nos dados de produção, vi que as conversas eram pausadas segundos depois de abertas, como se um atendente tivesse assumido. Só que ninguém tinha assumido. O sistema de agendamento da clínica mandava lembretes automáticos pelo mesmo número, e o nosso webhook entendia essas mensagens como um humano entrando na conversa.",
+            "Ajustei a regra para reconhecer esses envios automáticos, cobri com testes usando as mensagens reais e reativei as conversas afetadas. As respostas voltaram para mais de 150 por dia, sem a IA atropelar quando um atendente de verdade entra.",
+          ],
+          tags: ["Webhooks", "Edge Functions", "IA", "Testes"],
         },
         {
-          title: "Integração com a Meta e App Review",
-          context: "Plataforma de gestão para agências de marketing que conecta Facebook, Instagram e contas de anúncio.",
-          problem:
-            "A coleta de métricas do Instagram falhava em silêncio depois de uma mudança na API, e o app precisava passar pela revisão da Meta para liberar novas permissões.",
-          solution:
-            "Ajustei as métricas pedidas e isolei cada chamada para uma falha não derrubar a coleta inteira; tokens vencidos passaram a pedir reconexão em vez de falhar calados. Conduzi o App Review: vídeos de cada permissão, descrições e questionário de dados.",
-          result: "Coleta estável e envio à Meta com 5 permissões.",
-          tags: ["Meta Graph API", "Marketing API", "OAuth", "Idempotência"],
+          title: "As métricas do Instagram que sumiram",
+          teaser: "Uma mudança na API da Meta fez a coleta parar sem nenhum erro aparente.",
+          story: [
+            "Numa plataforma para agências, os números do Instagram simplesmente pararam de chegar. Não havia erro na tela: a coleta falhava em silêncio.",
+            "A Meta tinha mudado quais métricas aceitava. Ajustei o que pedíamos e separei cada chamada, para que uma falha não derrubasse a coleta inteira. Tokens vencidos passaram a pedir reconexão em vez de falhar calados.",
+            "Depois conduzi a revisão do app pela Meta: gravei um vídeo para cada permissão, escrevi as descrições e respondi o questionário de dados.",
+          ],
+          tags: ["Meta Graph API", "OAuth", "Integrações"],
         },
         {
-          title: "Plataforma de cursos com migração de 7 mil usuários",
-          context: "Cliente que precisava de uma plataforma de cursos online (LMS) própria.",
-          problem: "Levar cerca de 7 mil alunos de outro sistema sem perder acessos nem histórico.",
-          solution: "Desenvolvi a plataforma e a rotina de migração, com conferência dos dados antes e depois da virada.",
-          result: "Plataforma no ar com os alunos migrados.",
-          tags: ["React", "PostgreSQL", "Migração de dados"],
+          title: "Sete mil alunos de uma vez",
+          teaser: "Trazer os alunos de outra plataforma sem ninguém perder acesso.",
+          story: [
+            "Um cliente queria sair de uma plataforma de cursos pronta e ter a sua própria. O desafio era levar uns 7 mil alunos sem ninguém perder o acesso nem o histórico.",
+            "Construí a plataforma e a rotina de migração, conferindo os dados antes e depois da virada. Os alunos migrados continuaram vendo os cursos da plataforma antiga.",
+          ],
+          tags: ["PostgreSQL", "Migração de dados", "React"],
         },
       ],
     },
     experience: {
       title: "Experiência",
       items: [
-        {
-          role: "Desenvolvedor Full Stack (PJ)",
-          company: "Volúpia Digital / Infoprotect",
-          period: "jun 2026 – atual",
-          items: [
-            "CRM SaaS multiempresa em React, TypeScript e Supabase/PostgreSQL",
-            "Integrações com WhatsApp, Instagram, Meta Ads, webhooks e notas fiscais de serviço",
-            "Agentes e recursos com IA generativa em produção",
-            "Sustentação N2/N3 com análise de causa raiz",
-          ],
-        },
-        {
-          role: "Planejador Operacional",
-          company: "Orbenk",
-          period: "out 2025 – mai 2026",
-          items: ["Integrações para automação de processos", "ETL e dashboards em Power BI"],
-        },
-        {
-          role: "Estagiário em Banco de Dados",
-          company: "Byseven",
-          period: "fev 2025 – jul 2025",
-          items: ["Sustentação de bancos Oracle", "Rotinas de integração de dados"],
-        },
-      ],
-    },
-    stack: {
-      title: "Stack",
-      groups: [
-        ["Front-end", "React, TypeScript, Next.js, Vite, Tailwind CSS"],
-        ["Back-end", "Node.js, Fastify, APIs REST, Supabase Edge Functions, webhooks"],
-        ["Dados", "PostgreSQL (RLS, funções, gatilhos), Oracle, SQL, ETL, Power BI"],
-        ["IA", "Claude e OpenAI, agentes, RAG, triagem e classificação"],
-        ["Integrações", "Meta (WhatsApp, Instagram, Ads), Mercado Pago, Stripe"],
-        ["Ferramentas", "Git/GitHub, CI, Claude Code, Lovable, Linux"],
+        { role: "Desenvolvedor Full Stack (PJ)", company: "Volúpia Digital / Infoprotect", period: "jun 2026 – atual", summary: "Produtos SaaS com IA, WhatsApp e Meta, do banco de dados à tela, e sustentação em produção." },
+        { role: "Planejador Operacional", company: "Orbenk", period: "out 2025 – mai 2026", summary: "Automação de processos, ETL e dashboards no Power BI." },
+        { role: "Estagiário em Banco de Dados", company: "Byseven", period: "fev 2025 – jul 2025", summary: "Sustentação de bancos Oracle e rotinas de integração de dados." },
       ],
     },
     contact: {
@@ -270,78 +294,158 @@ export const CONTENT: Record<Lang, Content> = {
   en: {
     meta: {
       title: "Vinícius Fontanella Kleis — Full Stack Developer",
-      description:
-        "Full stack developer based in Brazil: React, TypeScript, Node, PostgreSQL/Supabase, Meta integrations and AI agents.",
+      description: "Full stack developer in Brazil. I build systems that talk to customers, payments and AI.",
     },
-    nav: { projects: "Projects", work: "At work", cases: "Case studies", experience: "Experience", contact: "Contact" },
+    nav: { projects: "Projects", work: "At work", stories: "Stories", contact: "Contact" },
     hero: {
       name: "Vinícius Fontanella Kleis",
-      headline: "Full stack developer. I build systems that talk to customers, payments and AI.",
-      summary:
-        "I build and maintain SaaS products end to end: from the database (PostgreSQL with Row Level Security) to React and TypeScript interfaces, including APIs, webhooks, WhatsApp and Meta integrations, and AI agents running in production.",
+      role: "Full stack developer",
+      intro: "I build systems that talk to customers, payments and AI. Instead of a long text about me, ask what you're curious about right here.",
       cv: "Download resume",
       cvHref: "/cv/resume-vinicius-fontanella-kleis.pdf",
       available: "Open to new opportunities",
-      chat: {
-        contact: "Aurora Clinic",
-        status: "AI agent active",
-        lines: [
-          { from: "in", text: "Hi! Are you open on Saturday?", time: "09:41" },
-          { from: "event", text: "Webhook received, AI agent replying" },
-          { from: "out", text: "We are, from 9am to 1pm. Want me to book a time for you?", time: "09:41" },
-          { from: "in", text: "Yes, 10am please", time: "09:42" },
-          { from: "event", text: "Booking saved to the calendar" },
-          { from: "out", text: "Done! Saturday at 10am is booked for you.", time: "09:42" },
-        ],
-        caption: "A simulated AI agent answering on WhatsApp, like the ones I run in production.",
+      photoAlt: "Photo of Vinícius",
+    },
+    chat: {
+      intro: ["Hi! I'm Vinícius 👋", "Pick a question and I'll tell you. Go wherever you like."],
+      start: ["about", "projects", "hardest", "work", "hire"],
+      topics: {
+        about: {
+          q: "How did you get into programming?",
+          a: [
+            "I started with Python at 23, practicing every day.",
+            "My first job in tech was an internship looking after Oracle databases. Then I moved to operations planning, where I automated processes and built Power BI dashboards.",
+            "Since June 2026 I've been a full stack developer. I went from the data all the way to the screen.",
+          ],
+          next: ["stack", "work"],
+        },
+        work: {
+          q: "Where do you work now?",
+          a: [
+            "I'm a full stack developer (contractor) at Volúpia Digital / Infoprotect in Brazil.",
+            "I work on four SaaS products in production: a CRM with AI answering on WhatsApp, a platform for agencies integrated with Meta, an online learning platform and a blog content platform.",
+          ],
+          links: [{ label: "See the products", href: "#work" }],
+          next: ["hardest", "stack"],
+        },
+        projects: {
+          q: "What have you built?",
+          a: [
+            "I have three open source projects on GitHub, and you can try two of them right now.",
+            "Relay is an AI agent for WhatsApp: it answers from the business's knowledge base and calls a person when it doesn't know.",
+            "HelpDesk is a ticket system for many companies, with SLA deadlines and AI helping with triage.",
+            "And there's a store with Mercado Pago checkout: Pix, card and boleto.",
+          ],
+          links: [
+            { label: "Try Relay", href: LINKS.relayDemo },
+            { label: "See the projects", href: "#projects" },
+          ],
+          next: ["relay", "hardest"],
+        },
+        relay: {
+          q: "How does Relay work inside?",
+          a: [
+            "A message arrives through the WhatsApp webhook and goes into a queue in PostgreSQL, so the webhook answers fast and nothing is lost if something fails.",
+            "The AI only gets the parts of the knowledge base that answer the question, and it isn't allowed to make things up.",
+            "If the customer asks for a person, wants to book or asks something not covered, the conversation goes to the team, who follow everything live.",
+          ],
+          links: [{ label: "Code on GitHub", href: `${LINKS.github}/whatsapp-ai-agent` }],
+          next: ["stack", "hire"],
+        },
+        hardest: {
+          q: "What's the hardest problem you've solved?",
+          a: [
+            "A clinic using our CRM stopped getting AI replies overnight. Almost every new conversation was paused within seconds.",
+            "I dug into production data and found it: the clinic's scheduling system sent automated messages from the same number, and they were recorded as if a human agent had taken over.",
+            "I fixed the rule, tested it with the real messages and re-enabled the conversations. The AI went from 2–6 replies a day back to over 150.",
+          ],
+          links: [{ label: "More stories", href: "#stories" }],
+          next: ["more", "work"],
+        },
+        more: {
+          q: "Got another story?",
+          a: [
+            "Sure! On the agency platform, Instagram metrics stopped arriving silently after a Meta API change. I isolated every call so one failure couldn't break the rest, then ran the app review with Meta.",
+            "And on a learning platform, I migrated about 7,000 students from another system, checking the data before and after the switch.",
+          ],
+          links: [{ label: "Read the stories", href: "#stories" }],
+          next: ["hire"],
+        },
+        stack: {
+          q: "What do you work with?",
+          a: [
+            "Day to day: React and TypeScript on the screen, Node.js and PostgreSQL (often through Supabase) on the server.",
+            "I integrate a lot with outside APIs: WhatsApp, Instagram and Meta ads, Mercado Pago, Stripe and e-invoicing.",
+            "And I use AI (Claude and OpenAI) inside the products and in the way I work.",
+          ],
+          next: ["projects", "hire"],
+        },
+        hire: {
+          q: "How can I reach you?",
+          a: [
+            "I'm open to full stack roles, remote or hybrid, and freelance projects. My English is advanced.",
+            "E-mail is the fastest way. I also answer on LinkedIn.",
+          ],
+          links: [
+            { label: "Send an e-mail", href: `mailto:${LINKS.email}` },
+            { label: "LinkedIn", href: LINKS.linkedin },
+            { label: "Resume (PDF)", href: "/cv/resume-vinicius-fontanella-kleis.pdf" },
+          ],
+        },
+      },
+      labels: {
+        typing: "typing…",
+        restart: "Start over",
+        pick: "Questions",
+        done: "You've seen it all! Scroll down to look at the projects at your own pace.",
+        me: "Vinícius",
       },
     },
     projects: {
       title: "Projects",
-      subtitle: "Personal projects, open source on GitHub.",
+      subtitle: "Built by me, open source on GitHub.",
       repoLabel: "Code",
-      demoLabel: "Live demo",
+      demoLabel: "Try it live",
+      moreLabel: "More details",
       items: [
         {
           name: "Relay: WhatsApp AI agent",
-          summary:
-            "An agent that answers a business's WhatsApp from its own knowledge base and hands the conversation to a person when it can't help. The team follows everything live and can take over at any moment.",
-          highlights: [
-            "RAG with PostgreSQL full-text search: the AI gets only the sections that answer the question and is told not to make things up",
-            "Hands off to a person when the customer asks for one, wants to book, cancel or complain, or asks something not covered",
-            "WhatsApp Cloud API webhook with signature checks; a job queue inside PostgreSQL with retries and no duplicate messages",
-            "Live inbox (SSE) and a phone simulator to try it without a WhatsApp account; 36 tests, CI and Docker",
+          summary: "Answers a business's WhatsApp from its own knowledge base and hands the conversation to a person when it can't help.",
+          highlights: ["The team sees everything live and can take over at any moment", "Comes with a simulated phone, so you can try it without WhatsApp"],
+          more: [
+            "The AI only gets the parts of the knowledge base that answer the question and is told not to make things up.",
+            "Official WhatsApp webhook with signature checks, and a queue in PostgreSQL with retries and no duplicate messages.",
+            "Automated tests, CI and Docker.",
           ],
-          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Claude API", "WhatsApp Cloud API", "SSE", "Docker"],
+          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Claude API", "WhatsApp Cloud API"],
           repo: `${LINKS.github}/whatsapp-ai-agent`,
+          demo: LINKS.relayDemo,
           images: relayImages,
         },
         {
           name: "HelpDesk",
-          summary:
-            "Multi-tenant support ticket system with SLA tracking and an AI assistant that suggests category, priority and a first reply.",
-          highlights: [
-            "Each company gets its own workspace; every query is scoped to the user's organization",
-            "Per-priority SLA that stops when a ticket is resolved and restarts if it is reopened",
-            "Customer replies, internal notes, ticket assignment and a history of who changed what",
-            "Triage with the Claude API: the agent reviews before applying, nothing is sent automatically",
-            "Automated tests and CI; PostgreSQL runs in WebAssembly during tests",
+          summary: "A ticket system for many companies, with SLA deadlines and an AI that suggests category, priority and a first reply.",
+          highlights: ["Each company only sees its own data", "Customer replies, internal notes and a history of who changed what"],
+          more: [
+            "The deadline stops when a ticket is resolved and restarts if it's reopened.",
+            "The AI only suggests: the agent reviews before applying, nothing is sent on its own.",
+            "Automated tests and CI, with a real PostgreSQL running in the tests.",
           ],
-          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Drizzle ORM", "Zod", "Vitest", "Claude API"],
+          stack: ["React", "TypeScript", "Fastify", "PostgreSQL", "Drizzle ORM", "Claude API"],
           repo: `${LINKS.github}/helpdesk`,
+          demo: LINKS.helpdeskDemo,
           images: helpdeskImages,
         },
         {
           name: "Online store with Mercado Pago",
-          summary:
-            "A complete storefront built in one day: catalog, cart, checkout with Pix, card and boleto, and the legal pages required in Brazil.",
-          highlights: [
-            "Serverless functions on Cloudflare Pages create the Mercado Pago payment",
-            "Prices are read server-side only: I fixed a bug where the browser could set its own price",
-            "A webhook that verifies Mercado Pago's signature and reads the payment from the API instead of trusting the notification",
-            "Automated tests for prices and signatures on GitHub Actions; no dependencies and no build step",
+          summary: "A storefront built in one day: catalog, cart and checkout with Pix, card and boleto.",
+          highlights: ["Prices are always read on the server, never from the browser", "Payment notifications have their signature checked"],
+          more: [
+            "Serverless functions on Cloudflare Pages create the Mercado Pago payment.",
+            "I fixed a flaw in the first version where you could edit the request and pay any price you wanted.",
+            "Automated price and signature tests on GitHub Actions.",
           ],
-          stack: ["HTML", "CSS", "JavaScript", "Cloudflare Pages Functions", "Mercado Pago", "node:test"],
+          stack: ["JavaScript", "Cloudflare Pages Functions", "Mercado Pago"],
           repo: `${LINKS.github}/online-store-mercadopago`,
           images: storeImages,
         },
@@ -349,107 +453,56 @@ export const CONTENT: Record<Lang, Content> = {
     },
     work: {
       title: "At work",
-      subtitle: "SaaS products in production that I work on today. The code is private; the case studies below cover some problems I solved in them.",
-      roleLabel: "My role",
+      subtitle: "Products in production that I work on today. The code belongs to the company, so here is what I do on each.",
       items: [
-        {
-          name: "Plotado",
-          what: "A multi-tenant CRM for small businesses, with customer service on WhatsApp, AI agents answering customers and Stripe subscriptions.",
-          role: "AI agents and handoff rules, WhatsApp webhooks, billing, database work and production support with root cause analysis.",
-          stack: ["React", "TypeScript", "Supabase", "Edge Functions", "Stripe", "LLM"],
-        },
-        {
-          name: "X-Flow",
-          what: "A management platform for marketing agencies that brings together clients, tasks and their Facebook, Instagram and ad accounts.",
-          role: "Integration with the Meta APIs (Graph and Marketing API), metrics collection and Meta's app review.",
-          stack: ["React", "TypeScript", "Supabase", "Meta Graph API", "OAuth"],
-        },
-        {
-          name: "FastBlog",
-          what: "A platform that writes and publishes blog content for businesses, sold as a subscription.",
-          role: "Payments, service e-invoices and maintenance of the backend functions.",
-          stack: ["React", "TypeScript", "Supabase", "Stripe"],
-        },
-        {
-          name: "EngraxaMente",
-          what: "An online learning platform with a student area, exams, certificates and AI-suggested learning paths.",
-          role: "Engagement dashboards and reports computed in the database, certificates, exams, the AI assistant and learning paths, and the migration of students from the old platform.",
-          stack: ["React", "TypeScript", "Supabase", "PostgreSQL", "LLM"],
-        },
+        { name: "Plotado", what: "A CRM for small businesses, with AI answering customers on WhatsApp.", role: "AI agents, WhatsApp webhooks, billing and the database." },
+        { name: "X-Flow", what: "Management for marketing agencies, connected to Facebook, Instagram and ads.", role: "Integration with the Meta APIs and Meta's app review." },
+        { name: "EngraxaMente", what: "An online learning platform with exams, certificates and AI-suggested paths.", role: "Dashboards and reports, certificates, AI and the student migration." },
+        { name: "FastBlog", what: "A platform that writes and publishes blog content for businesses.", role: "Payments, e-invoices and backend functions." },
       ],
     },
-    cases: {
-      title: "Case studies",
-      subtitle: "Real problems I solved at work, told without client data.",
-      labels: { problem: "Problem", solution: "Solution", result: "Result" },
+    stories: {
+      title: "Stories",
+      subtitle: "Real problems I solved, without client data.",
+      readLabel: "Read the story",
       items: [
         {
-          title: "The AI agent that kept going silent",
-          context: "Multi-tenant SaaS CRM with an AI agent answering a clinic's customers on WhatsApp.",
-          problem:
-            "From one day on, almost 100% of new conversations were paused seconds after opening and the AI stopped replying.",
-          solution:
-            "I traced it in production data: the clinic's scheduling system sent automated messages from the same number, and they were recorded as a human taking over. I fixed the rule in the webhook (an Edge Function), covered it with tests using the real messages, enabled the fix for that client only and safely re-enabled the affected conversations.",
-          result: "AI replies went from 2–6 to over 150 a day, without talking over real agents.",
-          tags: ["Supabase", "Edge Functions", "Webhooks", "LLM", "Testing"],
+          title: "The AI that stopped answering",
+          teaser: "Overnight, almost every conversation at a clinic was paused within seconds.",
+          story: [
+            "A clinic uses our CRM with an AI answering patients on WhatsApp. One day the replies nearly vanished: the AI was sending 2 to 6 messages a day, when normal was over a hundred.",
+            "In production data I saw conversations being paused seconds after they opened, as if an agent had taken over. Nobody had. The clinic's scheduling system sent automated reminders from the same number, and our webhook read them as a human joining the conversation.",
+            "I changed the rule to recognize those automated messages, covered it with tests using the real messages and re-enabled the affected conversations. Replies went back to over 150 a day, without the AI talking over a real agent.",
+          ],
+          tags: ["Webhooks", "Edge Functions", "AI", "Testing"],
         },
         {
-          title: "Meta integration and App Review",
-          context: "Management platform for marketing agencies that connects Facebook, Instagram and ad accounts.",
-          problem:
-            "Instagram metrics collection was failing silently after an API change, and the app had to pass Meta's review to unlock new permissions.",
-          solution:
-            "I adjusted the requested metrics and isolated each call so one failure couldn't break the whole run; expired tokens now ask for reconnection instead of failing silently. I ran the App Review: a video per permission, descriptions and the data handling questionnaire.",
-          result: "Stable collection and a Meta submission with 5 permissions.",
-          tags: ["Meta Graph API", "Marketing API", "OAuth", "Idempotency"],
+          title: "The Instagram metrics that disappeared",
+          teaser: "A Meta API change made data collection stop without any visible error.",
+          story: [
+            "On a platform for agencies, Instagram numbers simply stopped arriving. Nothing showed an error: collection was failing silently.",
+            "Meta had changed which metrics it accepted. I adjusted what we asked for and separated every call, so one failure couldn't take down the whole run. Expired tokens now ask to reconnect instead of failing quietly.",
+            "Then I ran the app review with Meta: a video for each permission, the descriptions and the data questionnaire.",
+          ],
+          tags: ["Meta Graph API", "OAuth", "Integrations"],
         },
         {
-          title: "Online learning platform and a 7,000-user migration",
-          context: "A client needed its own online learning platform (LMS).",
-          problem: "Move about 7,000 students from another system without losing access or history.",
-          solution: "I built the platform and the migration routine, checking the data before and after the cutover.",
-          result: "Platform live with every student migrated.",
-          tags: ["React", "PostgreSQL", "Data migration"],
+          title: "Seven thousand students at once",
+          teaser: "Bringing students over from another platform without anyone losing access.",
+          story: [
+            "A client wanted to leave an off-the-shelf course platform and have their own. The challenge was moving about 7,000 students without anyone losing access or history.",
+            "I built the platform and the migration routine, checking the data before and after the switch. Migrated students kept seeing the courses from the old platform.",
+          ],
+          tags: ["PostgreSQL", "Data migration", "React"],
         },
       ],
     },
     experience: {
       title: "Experience",
       items: [
-        {
-          role: "Full Stack Developer (Contractor)",
-          company: "Volúpia Digital / Infoprotect",
-          period: "Jun 2026 – present",
-          items: [
-            "Multi-tenant SaaS CRM in React, TypeScript and Supabase/PostgreSQL",
-            "WhatsApp, Instagram, Meta Ads, webhook and e-invoice integrations",
-            "Generative AI agents and features in production",
-            "L2/L3 support with root cause analysis",
-          ],
-        },
-        {
-          role: "Operations Planner",
-          company: "Orbenk",
-          period: "Oct 2025 – May 2026",
-          items: ["Process automation integrations", "ETL and Power BI dashboards"],
-        },
-        {
-          role: "Database Intern",
-          company: "Byseven",
-          period: "Feb 2025 – Jul 2025",
-          items: ["Oracle database support", "Data integration routines"],
-        },
-      ],
-    },
-    stack: {
-      title: "Stack",
-      groups: [
-        ["Front end", "React, TypeScript, Next.js, Vite, Tailwind CSS"],
-        ["Back end", "Node.js, Fastify, REST APIs, Supabase Edge Functions, webhooks"],
-        ["Data", "PostgreSQL (RLS, functions, triggers), Oracle, SQL, ETL, Power BI"],
-        ["AI", "Claude and OpenAI, agents, RAG, triage and classification"],
-        ["Integrations", "Meta (WhatsApp, Instagram, Ads), Mercado Pago, Stripe"],
-        ["Tools", "Git/GitHub, CI, Claude Code, Lovable, Linux"],
+        { role: "Full Stack Developer (Contractor)", company: "Volúpia Digital / Infoprotect", period: "Jun 2026 – present", summary: "SaaS products with AI, WhatsApp and Meta, from the database to the screen, plus production support." },
+        { role: "Operations Planner", company: "Orbenk", period: "Oct 2025 – May 2026", summary: "Process automation, ETL and Power BI dashboards." },
+        { role: "Database Intern", company: "Byseven", period: "Feb 2025 – Jul 2025", summary: "Oracle database support and data integration routines." },
       ],
     },
     contact: {
