@@ -20,8 +20,7 @@ type Project = {
   images: { src: string; alt: string }[];
 };
 
-// Before/after shown as two bars; pct is only the bar length, the text carries the facts.
-type Bar = { label: string; value: string; pct: number };
+type Bar = { label: string; value: string };
 type Story = { title: string; teaser: string; before: Bar; after: Bar; story: string[]; tags: string[] };
 type Job = { role: string; company: string; period: string; summary: string };
 type Product = { name: string; what: string; role: string };
@@ -378,8 +377,8 @@ export const CONTENT: Record<Lang, Content> = {
         {
           title: "A IA que parou de responder",
           teaser: "De um dia para o outro, quase toda conversa de uma clínica era pausada em segundos.",
-          before: { label: "Antes", value: "2 a 6 respostas da IA por dia", pct: 4 },
-          after: { label: "Depois", value: "mais de 150 por dia", pct: 100 },
+          before: { label: "Antes", value: "2 a 6 respostas da IA por dia" },
+          after: { label: "Depois", value: "mais de 150 por dia" },
           story: [
             "Uma clínica usa nosso CRM com uma IA respondendo os pacientes no WhatsApp. Um dia, as respostas praticamente sumiram: a IA mandava 2 a 6 mensagens por dia, quando o normal era mais de cem.",
             "Nos dados de produção, vi que as conversas eram pausadas segundos depois de abertas, como se um atendente tivesse assumido. Só que ninguém tinha assumido. O sistema de agendamento da clínica mandava lembretes automáticos pelo mesmo número, e o nosso webhook entendia essas mensagens como um humano entrando na conversa.",
@@ -390,8 +389,8 @@ export const CONTENT: Record<Lang, Content> = {
         {
           title: "As métricas do Instagram que sumiram",
           teaser: "Uma mudança na API da Meta fez a coleta parar sem nenhum erro aparente.",
-          before: { label: "Antes", value: "coleta parada, sem nenhum erro na tela", pct: 6 },
-          after: { label: "Depois", value: "coleta estável e app enviado à revisão da Meta", pct: 100 },
+          before: { label: "Antes", value: "coleta parada, sem nenhum erro na tela" },
+          after: { label: "Depois", value: "coleta estável e app enviado à revisão da Meta" },
           story: [
             "Numa plataforma para agências, os números do Instagram pararam de chegar. Não havia erro na tela: a coleta falhava em silêncio.",
             "A Meta tinha mudado quais métricas aceitava. Ajustei o que pedíamos e separei cada chamada, para que uma falha não derrubasse a coleta inteira. Tokens vencidos passaram a pedir reconexão em vez de falhar calados.",
@@ -402,8 +401,8 @@ export const CONTENT: Record<Lang, Content> = {
         {
           title: "Sete mil alunos de uma vez",
           teaser: "Trazer os alunos de outra plataforma sem ninguém perder acesso.",
-          before: { label: "Antes", value: "nenhum aluno na plataforma nova", pct: 2 },
-          after: { label: "Depois", value: "cerca de 7 mil alunos migrados com acesso", pct: 100 },
+          before: { label: "Antes", value: "nenhum aluno na plataforma nova" },
+          after: { label: "Depois", value: "cerca de 7 mil alunos migrados com acesso" },
           story: [
             "Um cliente queria sair de uma plataforma de cursos pronta e ter a sua própria. O desafio era levar uns 7 mil alunos sem ninguém perder o acesso nem o histórico.",
             "Construí a plataforma e a rotina de migração, conferindo os dados antes e depois da virada. Os alunos migrados continuaram vendo os cursos da plataforma antiga.",
@@ -714,8 +713,8 @@ export const CONTENT: Record<Lang, Content> = {
         {
           title: "The AI that stopped answering",
           teaser: "Overnight, almost every conversation at a clinic was paused within seconds.",
-          before: { label: "Before", value: "2 to 6 AI replies a day", pct: 4 },
-          after: { label: "After", value: "over 150 a day", pct: 100 },
+          before: { label: "Before", value: "2 to 6 AI replies a day" },
+          after: { label: "After", value: "over 150 a day" },
           story: [
             "A clinic uses our CRM with an AI answering patients on WhatsApp. One day the replies nearly vanished: the AI was sending 2 to 6 messages a day, when normal was over a hundred.",
             "In production data I saw conversations being paused seconds after they opened, as if an agent had taken over. Nobody had. The clinic's scheduling system sent automated reminders from the same number, and our webhook read them as a human joining the conversation.",
@@ -726,8 +725,8 @@ export const CONTENT: Record<Lang, Content> = {
         {
           title: "The Instagram metrics that disappeared",
           teaser: "A Meta API change made data collection stop without any visible error.",
-          before: { label: "Before", value: "collection stopped, no error on screen", pct: 6 },
-          after: { label: "After", value: "stable collection and the app sent to Meta's review", pct: 100 },
+          before: { label: "Before", value: "collection stopped, no error on screen" },
+          after: { label: "After", value: "stable collection and the app sent to Meta's review" },
           story: [
             "On a platform for agencies, Instagram numbers stopped arriving. Nothing showed an error: collection was failing silently.",
             "Meta had changed which metrics it accepted. I adjusted what we asked for and separated every call, so one failure couldn't take down the whole run. Expired tokens now ask to reconnect instead of failing quietly.",
@@ -738,8 +737,8 @@ export const CONTENT: Record<Lang, Content> = {
         {
           title: "Seven thousand students at once",
           teaser: "Bringing students over from another platform without anyone losing access.",
-          before: { label: "Before", value: "no students on the new platform", pct: 2 },
-          after: { label: "After", value: "about 7,000 students migrated with access", pct: 100 },
+          before: { label: "Before", value: "no students on the new platform" },
+          after: { label: "After", value: "about 7,000 students migrated with access" },
           story: [
             "A client wanted to leave an off-the-shelf course platform and have their own. The challenge was moving about 7,000 students without anyone losing access or history.",
             "I built the platform and the migration routine, checking the data before and after the switch. Migrated students kept seeing the courses from the old platform.",

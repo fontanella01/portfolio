@@ -6,7 +6,6 @@ import { SITE_URL } from "@/site";
 import { ChatExplorer } from "@/components/ChatExplorer";
 import { ProjectTabs } from "@/components/ProjectTabs";
 import { SystemMap } from "@/components/SystemMap";
-import { Shapes } from "@/components/Shapes";
 import { Sidebar } from "@/components/Sidebar";
 import QRCode from "qrcode";
 import { Section } from "@/components/Section";
@@ -96,7 +95,6 @@ export default async function Home({ params }: { params: Params }) {
       <div className="lg:pl-64">
       <main id="top">
         <section id="intro" className="tone-purple relative overflow-hidden">
-          <Shapes variant="purple" />
           <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
           <div>
             <Image
@@ -148,7 +146,8 @@ export default async function Home({ params }: { params: Params }) {
                 />
                 <p className="font-display text-sm text-muted">{job.period}</p>
                 <h3 className="mt-1 font-display text-2xl font-semibold tracking-tight">
-                  {job.role} <span className="font-normal text-muted">· {job.company}</span>
+                  {job.role}
+                  <span className="block text-xl font-normal text-muted">{job.company}</span>
                 </h3>
                 <p className="mt-2 max-w-2xl text-muted">{job.summary}</p>
                 {i === 0 && (
@@ -171,29 +170,22 @@ export default async function Home({ params }: { params: Params }) {
         </Section>
 
         <Section id="stories" title={c.stories.title} subtitle={c.stories.subtitle} tone="pink">
-          <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
-            {c.stories.items.map((st, i) => (
-              <article key={st.title} className={`tone-card rounded-3xl bg-surface p-6 shadow-[8px_8px_0_rgb(19_35_58/0.12)] ${i === 1 ? "lg:mt-10" : ""}`}>
-                <h3 className="font-display text-2xl font-bold leading-tight tracking-tight">{st.title}</h3>
-                <p className="mt-2 text-muted">{st.teaser}</p>
-                {/* before and after, side by side as bars */}
-                <dl className="mt-6 space-y-4 font-display">
-                  {[
-                    { bar: st.before, color: "bg-[#f58fa6]" },
-                    { bar: st.after, color: "bg-[#0f7a5f]" },
-                  ].map(({ bar, color }) => (
-                    <div key={bar.label}>
-                      <dt className="text-sm font-bold text-muted">{bar.label}</dt>
-                      <dd className="mt-1">
-                        <span className="block h-3 overflow-hidden rounded-full bg-nevoa/60">
-                          <span className={`block h-full rounded-full ${color}`} style={{ width: `${Math.max(bar.pct, 3)}%` }} />
-                        </span>
-                        <span className="mt-1.5 block text-[0.95rem] font-semibold">{bar.value}</span>
-                      </dd>
+          <div className="max-w-4xl divide-y divide-[rgb(19_35_58/0.14)] border-y border-[rgb(19_35_58/0.14)]">
+            {c.stories.items.map((st) => (
+              <article key={st.title} className="grid gap-x-10 gap-y-4 py-9 md:grid-cols-[1fr_1.1fr]">
+                <div>
+                  <h3 className="font-display text-2xl font-bold leading-tight tracking-tight">{st.title}</h3>
+                  <p className="mt-2 text-muted">{st.teaser}</p>
+                </div>
+                <dl className="grid grid-cols-2 gap-4 font-display">
+                  {[st.before, st.after].map((side, i) => (
+                    <div key={side.label} className={`rounded-2xl p-4 ${i ? "bg-white" : "bg-white/45"}`}>
+                      <dt className="text-sm text-muted">{side.label}</dt>
+                      <dd className={`mt-1 leading-snug ${i ? "font-semibold text-[#0f7a5f]" : ""}`}>{side.value}</dd>
                     </div>
                   ))}
                 </dl>
-                <details className="group mt-6 border-t border-nevoa pt-4">
+                <details className="group md:col-start-2">
                   <summary className="cursor-pointer list-none font-display text-sm font-bold text-sinal hover:underline">
                     <span className="inline-block transition-transform group-open:rotate-90" aria-hidden>
                       ›
@@ -214,10 +206,9 @@ export default async function Home({ params }: { params: Params }) {
 
         {/* the page ends with a business card */}
         <section id="contact" aria-labelledby="contact-title" className="tone-ink relative scroll-mt-16 overflow-hidden">
-          <Shapes variant="ink" />
           <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:py-28 lg:grid-cols-[1fr_1.1fr]">
             <div>
-              <h2 id="contact-title" className="font-display text-[clamp(2.8rem,8vw,6rem)] font-extrabold leading-[0.92] tracking-[-0.04em]">
+              <h2 id="contact-title" className="font-display text-[clamp(2.2rem,5vw,3.5rem)] font-bold leading-[1.02] tracking-[-0.03em]">
                 {c.closing.title}
               </h2>
               <p className="mt-5 max-w-md text-lg text-muted">{c.closing.text}</p>
