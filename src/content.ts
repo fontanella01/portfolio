@@ -75,31 +75,31 @@ const LINKS = {
 export { LINKS };
 
 const helpdeskImages = [
-  { src: "/projects/helpdesk-tickets.png", alt: "HelpDesk — ticket conversation and history" },
-  { src: "/projects/helpdesk-ai-assistant.png", alt: "HelpDesk — AI assistant" },
-  { src: "/projects/helpdesk-dashboard.png", alt: "HelpDesk — dashboard" },
+  { src: "/projects/helpdesk-tickets.png", alt: "HelpDesk: ticket conversation and history" },
+  { src: "/projects/helpdesk-ai-assistant.png", alt: "HelpDesk: AI assistant" },
+  { src: "/projects/helpdesk-dashboard.png", alt: "HelpDesk: dashboard" },
 ];
 const relayImages = [
-  { src: "/projects/relay-inbox.png", alt: "Relay — inbox with the AI answering and the phone simulator" },
-  { src: "/projects/relay-handoff.png", alt: "Relay — conversation handed to the team" },
-  { src: "/projects/relay-knowledge.png", alt: "Relay — knowledge base" },
+  { src: "/projects/relay-inbox.png", alt: "Relay: inbox with the AI answering and the phone simulator" },
+  { src: "/projects/relay-handoff.png", alt: "Relay: conversation handed to the team" },
+  { src: "/projects/relay-knowledge.png", alt: "Relay: knowledge base" },
 ];
 const storeImages = [
-  { src: "/projects/store-home.png", alt: "Store — catalog" },
-  { src: "/projects/store-product.png", alt: "Store — product" },
-  { src: "/projects/store-cart.png", alt: "Store — cart" },
+  { src: "/projects/store-home.png", alt: "Store: catalog" },
+  { src: "/projects/store-product.png", alt: "Store: product" },
+  { src: "/projects/store-cart.png", alt: "Store: cart" },
 ];
 
 export const CONTENT: Record<Lang, Content> = {
   pt: {
     meta: {
-      title: "Vinícius Fontanella Kleis — Desenvolvedor Full Stack",
-      description: "Desenvolvedor full stack em Joinville/SC. Faço sistemas que conversam com clientes, pagamentos e IA.",
+      title: "Vinícius Fontanella Kleis | Desenvolvedor full stack",
+      description: "Desenvolvedor full stack em Joinville (SC). Trabalho com React, Node.js, PostgreSQL, integrações com WhatsApp e agentes de IA.",
     },
     nav: { map: "Como eu construo", projects: "Projetos", path: "Trajetória", stories: "Histórias", contact: "Contato" },
     map: {
       title: "Como eu construo",
-      subtitle: "Os sistemas em que trabalho são peças que conversam entre si. Clique numa peça para ver o que eu fiz com ela.",
+      subtitle: "Este é o caminho que uma mensagem faz nos sistemas em que trabalho. Clique numa peça para ver o que eu fiz nela.",
       hint: "Escolha uma peça do mapa",
       didLabel: "O que eu fiz",
       nodes: {
@@ -113,42 +113,42 @@ export const CONTENT: Record<Lang, Content> = {
         payments: {
           label: "Pagamentos",
           sub: "Stripe e Mercado Pago",
-          what: "Cobrança de assinaturas e checkout. O pagamento confirma por webhook, nunca pelo que o navegador diz.",
-          did: ["Assinaturas com Stripe nos produtos da empresa", "Loja com Pix, cartão e boleto, com o preço sempre validado no servidor"],
+          what: "Cobrança de assinaturas e checkout. A confirmação do pagamento chega pelo webhook do Stripe ou do Mercado Pago.",
+          did: ["Assinaturas com Stripe nos produtos da empresa", "Loja com Pix, cartão e boleto, em que o preço é conferido no servidor"],
           links: [{ label: "Ver a loja", href: "#p-store" }],
         },
         webhook: {
           label: "Webhooks",
-          sub: "a porta de entrada",
-          what: "É por aqui que outros sistemas avisam que algo aconteceu: chegou mensagem, um pagamento foi aprovado.",
-          did: ["Assinatura conferida em cada chamada, para garantir que veio de quem diz", "Achei e corrigi a regra que fazia a IA de uma clínica parar de responder"],
+          sub: "por onde os avisos chegam",
+          what: "Outros sistemas usam o webhook para avisar que algo aconteceu, como uma mensagem nova ou um pagamento aprovado.",
+          did: ["Conferência da assinatura em cada chamada, para saber que o aviso veio mesmo do WhatsApp ou do Mercado Pago", "Achei e corrigi a regra que fazia a IA de uma clínica parar de responder"],
           links: [{ label: "Ler a história", href: "#stories" }],
         },
         queue: {
           label: "Fila",
           sub: "trabalho em segundo plano",
-          what: "O webhook responde na hora e o trabalho pesado fica para depois. Se algo falhar, tenta de novo sozinho.",
+          what: "O webhook responde na hora e o resto do trabalho fica para depois. Se algo falhar, a tarefa é tentada de novo.",
           did: ["Fila dentro do próprio PostgreSQL no Relay, sem mensagem duplicada", "Respostas agrupadas quando o cliente manda várias mensagens seguidas"],
           links: [{ label: "Ver o Relay", href: "#p-relay" }],
         },
         ai: {
           label: "IA",
           sub: "Claude e OpenAI",
-          what: "Agentes que atendem clientes de verdade. Eles respondem só com o que a empresa ensinou e sabem a hora de chamar uma pessoa.",
+          what: "São agentes que atendem clientes pelo WhatsApp. Eles respondem com o que a empresa cadastrou e passam a conversa para uma pessoa quando não sabem a resposta.",
           did: ["Agentes de IA atendendo no WhatsApp em produção", "Base de conhecimento (RAG) no Relay", "IA que sugere categoria e resposta no HelpDesk"],
           links: [{ label: "Ver o Relay", href: "#p-relay" }, { label: "Ver o HelpDesk", href: "#p-helpdesk" }],
         },
         database: {
           label: "Banco de dados",
           sub: "PostgreSQL e Supabase",
-          what: "Onde tudo fica guardado. Cada empresa só enxerga os próprios dados, e os relatórios são calculados direto no banco.",
+          what: "É onde ficam os dados. Cada empresa só vê os próprios registros, e os relatórios são calculados no próprio banco.",
           did: ["Separação entre empresas no HelpDesk e no CRM", "Relatórios e painéis calculados no PostgreSQL", "Migração de 7 mil alunos de outra plataforma"],
           links: [{ label: "Ver o HelpDesk", href: "#p-helpdesk" }, { label: "Ler as histórias", href: "#stories" }],
         },
         panel: {
           label: "Painel da equipe",
           sub: "React e TypeScript",
-          what: "As telas que a equipe usa no dia a dia, atualizando ao vivo.",
+          what: "São as telas que a equipe usa no dia a dia. Elas atualizam sozinhas quando chega algo novo.",
           did: ["Caixa de entrada que atualiza sozinha no Relay", "Painéis de prazo e de carga por atendente no HelpDesk"],
           links: [{ label: "Testar o HelpDesk", href: LINKS.helpdeskDemo }],
         },
@@ -189,7 +189,7 @@ export const CONTENT: Record<Lang, Content> = {
     },
     trajectory: {
       title: "Trajetória",
-      subtitle: "Do banco de dados até a tela.",
+      subtitle: "Comecei cuidando de banco de dados. Hoje faço o sistema inteiro.",
       productsLabel: "Produtos em que trabalho hoje",
     },
     closing: {
@@ -203,7 +203,7 @@ export const CONTENT: Record<Lang, Content> = {
     hero: {
       name: "Vinícius Fontanella Kleis",
       role: "Desenvolvedor full stack",
-      intro: "Faço sistemas que conversam com clientes, pagamentos e IA. Em vez de um texto longo sobre mim, pergunte o que te interessa na conversa.",
+      intro: "Desenvolvo sistemas web com integrações de WhatsApp, pagamentos e IA. Em vez de um texto longo sobre mim, deixei uma conversa aqui: pergunte o que quiser.",
       cv: "Baixar currículo",
       cvHref: "/cv/curriculo-vinicius-fontanella-kleis.pdf",
       available: "Aberto a novas oportunidades",
@@ -218,7 +218,7 @@ export const CONTENT: Record<Lang, Content> = {
           a: [
             "Comecei com Python aos 23, praticando no dia a dia.",
             "Meu primeiro emprego na área foi um estágio cuidando de bancos Oracle. Depois fui para planejamento operacional, onde automatizava processos e montava dashboards no Power BI.",
-            "Desde junho de 2026 sou dev full stack. Fui do dado até a tela.",
+            "Desde junho de 2026 trabalho como dev full stack.",
           ],
           next: ["stack", "work"],
         },
@@ -228,7 +228,7 @@ export const CONTENT: Record<Lang, Content> = {
             "Sou dev full stack PJ na Volúpia Digital / Infoprotect.",
             "Trabalho em quatro produtos SaaS que estão no ar: um CRM com IA atendendo no WhatsApp, uma plataforma para agências integrada à Meta, uma plataforma de cursos e uma de conteúdo para blogs.",
           ],
-          links: [{ label: "Ver os produtos", href: "#work" }],
+          links: [{ label: "Ver a trajetória", href: "#path" }],
           next: ["hardest", "stack"],
         },
         projects: {
@@ -300,13 +300,13 @@ export const CONTENT: Record<Lang, Content> = {
         typing: "digitando…",
         restart: "Recomeçar a conversa",
         pick: "Perguntas",
-        done: "Você viu tudo! Se quiser, desce a página para ver os projetos com calma.",
+        done: "Você viu todas as perguntas. Os projetos estão logo abaixo.",
         me: "Vinícius",
       },
     },
     projects: {
       title: "Projetos",
-      subtitle: "Feitos por mim, com código aberto no GitHub.",
+      subtitle: "Projetos pessoais, com o código aberto no GitHub. Dois deles dá para testar agora.",
       repoLabel: "Código",
       demoLabel: "Testar ao vivo",
       moreLabel: "Mais detalhes",
@@ -348,7 +348,7 @@ export const CONTENT: Record<Lang, Content> = {
           tab: "Loja",
           name: "Loja com Mercado Pago",
           summary: "Loja virtual feita em um dia: catálogo, carrinho e checkout com Pix, cartão e boleto.",
-          highlights: ["O preço é sempre lido no servidor, nunca do navegador", "O aviso de pagamento tem a assinatura conferida"],
+          highlights: ["O preço é conferido no servidor antes de criar o pagamento", "O aviso de pagamento tem a assinatura conferida"],
           more: [
             "Funções serverless no Cloudflare Pages criam o pagamento no Mercado Pago.",
             "Corrigi uma falha da primeira versão, em que dava para editar a requisição e pagar o preço que quisesse.",
@@ -362,7 +362,7 @@ export const CONTENT: Record<Lang, Content> = {
     },
     work: {
       title: "No trabalho",
-      subtitle: "Produtos em produção em que trabalho hoje. O código é da empresa, então conto o que eu faço em cada um.",
+      subtitle: "Produtos que estão no ar e em que eu trabalho hoje. O código é da empresa, então descrevo o que faço em cada um.",
       items: [
         { name: "Plotado", what: "CRM para pequenos negócios, com IA atendendo clientes no WhatsApp.", role: "Agentes de IA, webhooks do WhatsApp, cobrança e banco de dados." },
         { name: "X-Flow", what: "Gestão para agências de marketing, ligada ao Facebook, Instagram e anúncios.", role: "Integração com as APIs da Meta e a revisão do app pela Meta." },
@@ -372,7 +372,7 @@ export const CONTENT: Record<Lang, Content> = {
     },
     stories: {
       title: "Histórias",
-      subtitle: "Problemas reais que resolvi, sem dados de clientes.",
+      subtitle: "Três problemas do trabalho e o que eu fiz para resolver cada um.",
       readLabel: "Ler a história",
       items: [
         {
@@ -393,7 +393,7 @@ export const CONTENT: Record<Lang, Content> = {
           before: { label: "Antes", value: "coleta parada, sem nenhum erro na tela", pct: 6 },
           after: { label: "Depois", value: "coleta estável e app enviado à revisão da Meta", pct: 100 },
           story: [
-            "Numa plataforma para agências, os números do Instagram simplesmente pararam de chegar. Não havia erro na tela: a coleta falhava em silêncio.",
+            "Numa plataforma para agências, os números do Instagram pararam de chegar. Não havia erro na tela: a coleta falhava em silêncio.",
             "A Meta tinha mudado quais métricas aceitava. Ajustei o que pedíamos e separei cada chamada, para que uma falha não derrubasse a coleta inteira. Tokens vencidos passaram a pedir reconexão em vez de falhar calados.",
             "Depois conduzi a revisão do app pela Meta: gravei um vídeo para cada permissão, escrevi as descrições e respondi o questionário de dados.",
           ],
@@ -415,27 +415,27 @@ export const CONTENT: Record<Lang, Content> = {
     experience: {
       title: "Experiência",
       items: [
-        { role: "Desenvolvedor Full Stack (PJ)", company: "Volúpia Digital / Infoprotect", period: "jun 2026 – atual", summary: "Produtos SaaS com IA, WhatsApp e Meta, do banco de dados à tela, e sustentação em produção." },
-        { role: "Planejador Operacional", company: "Orbenk", period: "out 2025 – mai 2026", summary: "Automação de processos, ETL e dashboards no Power BI." },
-        { role: "Estagiário em Banco de Dados", company: "Byseven", period: "fev 2025 – jul 2025", summary: "Sustentação de bancos Oracle e rotinas de integração de dados." },
+        { role: "Desenvolvedor Full Stack (PJ)", company: "Volúpia Digital / Infoprotect", period: "jun 2026 até hoje", summary: "Produtos SaaS com IA, WhatsApp e integrações com a Meta, além de manter esses sistemas funcionando em produção." },
+        { role: "Planejador Operacional", company: "Orbenk", period: "out 2025 a mai 2026", summary: "Automação de processos, ETL e dashboards no Power BI." },
+        { role: "Estagiário em Banco de Dados", company: "Byseven", period: "fev 2025 a jul 2025", summary: "Sustentação de bancos Oracle e rotinas de integração de dados." },
       ],
     },
     contact: {
       title: "Vamos conversar",
-      text: "Estou aberto a vagas full stack (remoto ou híbrido) e projetos freelance.",
-      location: "Joinville, SC — Brasil",
+      text: "Estou aberto a vagas full stack (remotas ou híbridas) e a projetos freelance.",
+      location: "Joinville, SC, Brasil",
     },
     switchLang: "English",
   },
   en: {
     meta: {
-      title: "Vinícius Fontanella Kleis — Full Stack Developer",
-      description: "Full stack developer in Brazil. I build systems that talk to customers, payments and AI.",
+      title: "Vinícius Fontanella Kleis | Full stack developer",
+      description: "Full stack developer in Joinville, Brazil. I work with React, Node.js, PostgreSQL, WhatsApp integrations and AI agents.",
     },
     nav: { map: "How I build", projects: "Projects", path: "Path", stories: "Stories", contact: "Contact" },
     map: {
       title: "How I build",
-      subtitle: "The systems I work on are pieces that talk to each other. Click a piece to see what I did with it.",
+      subtitle: "This is the path a message takes through the systems I work on. Click a piece to see what I did there.",
       hint: "Pick a piece of the map",
       didLabel: "What I did",
       nodes: {
@@ -449,42 +449,42 @@ export const CONTENT: Record<Lang, Content> = {
         payments: {
           label: "Payments",
           sub: "Stripe and Mercado Pago",
-          what: "Subscription billing and checkout. Payment is confirmed by webhook, never by what the browser says.",
-          did: ["Stripe subscriptions in the company's products", "A store with Pix, card and boleto, with prices always checked on the server"],
+          what: "Subscription billing and checkout. Payment confirmation comes through the Stripe or Mercado Pago webhook.",
+          did: ["Stripe subscriptions in the company's products", "A store with Pix, card and boleto, where the price is checked on the server"],
           links: [{ label: "See the store", href: "#p-store" }],
         },
         webhook: {
           label: "Webhooks",
-          sub: "the front door",
-          what: "This is how other systems say something happened: a message arrived, a payment was approved.",
-          did: ["The signature is checked on every call, to make sure it came from who it claims", "Found and fixed the rule that made a clinic's AI stop answering"],
+          sub: "where notifications arrive",
+          what: "Other systems use the webhook to report that something happened, like a new message or an approved payment.",
+          did: ["Signature check on every call, to know the notification really came from WhatsApp or Mercado Pago", "Found and fixed the rule that made a clinic's AI stop answering"],
           links: [{ label: "Read the story", href: "#stories" }],
         },
         queue: {
           label: "Queue",
           sub: "background work",
-          what: "The webhook answers right away and the heavy work happens later. If something fails, it retries on its own.",
+          what: "The webhook answers right away and the rest of the work happens later. If something fails, the task is retried.",
           did: ["A queue inside PostgreSQL in Relay, with no duplicate messages", "Replies grouped when a customer sends several messages in a row"],
           links: [{ label: "See Relay", href: "#p-relay" }],
         },
         ai: {
           label: "AI",
           sub: "Claude and OpenAI",
-          what: "Agents that answer real customers. They only use what the business taught them and know when to call a person.",
+          what: "These are agents that answer customers on WhatsApp. They reply with what the business has entered and hand the conversation to a person when they don't know the answer.",
           did: ["AI agents answering on WhatsApp in production", "A knowledge base (RAG) in Relay", "AI suggesting category and reply in HelpDesk"],
           links: [{ label: "See Relay", href: "#p-relay" }, { label: "See HelpDesk", href: "#p-helpdesk" }],
         },
         database: {
           label: "Database",
           sub: "PostgreSQL and Supabase",
-          what: "Where everything is stored. Each company only sees its own data, and reports are computed right in the database.",
+          what: "This is where the data lives. Each company only sees its own records, and reports are computed in the database itself.",
           did: ["Separation between companies in HelpDesk and the CRM", "Reports and dashboards computed in PostgreSQL", "Migrating 7,000 students from another platform"],
           links: [{ label: "See HelpDesk", href: "#p-helpdesk" }, { label: "Read the stories", href: "#stories" }],
         },
         panel: {
           label: "Team dashboard",
           sub: "React and TypeScript",
-          what: "The screens the team uses every day, updating live.",
+          what: "These are the screens the team uses every day. They update on their own when something new arrives.",
           did: ["An inbox that updates on its own in Relay", "Deadline and workload dashboards in HelpDesk"],
           links: [{ label: "Try HelpDesk", href: LINKS.helpdeskDemo }],
         },
@@ -525,7 +525,7 @@ export const CONTENT: Record<Lang, Content> = {
     },
     trajectory: {
       title: "Path",
-      subtitle: "From the database to the screen.",
+      subtitle: "I started out looking after databases. Today I build the whole system.",
       productsLabel: "Products I work on today",
     },
     closing: {
@@ -539,7 +539,7 @@ export const CONTENT: Record<Lang, Content> = {
     hero: {
       name: "Vinícius Fontanella Kleis",
       role: "Full stack developer",
-      intro: "I build systems that talk to customers, payments and AI. Instead of a long text about me, ask what you're curious about in the chat.",
+      intro: "I build web systems with WhatsApp, payment and AI integrations. Instead of a long text about me, there's a chat here: ask whatever you like.",
       cv: "Download resume",
       cvHref: "/cv/resume-vinicius-fontanella-kleis.pdf",
       available: "Open to new opportunities",
@@ -554,7 +554,7 @@ export const CONTENT: Record<Lang, Content> = {
           a: [
             "I started with Python at 23, practicing every day.",
             "My first job in tech was an internship looking after Oracle databases. Then I moved to operations planning, where I automated processes and built Power BI dashboards.",
-            "Since June 2026 I've been a full stack developer. I went from the data all the way to the screen.",
+            "Since June 2026 I've worked as a full stack developer.",
           ],
           next: ["stack", "work"],
         },
@@ -564,7 +564,7 @@ export const CONTENT: Record<Lang, Content> = {
             "I'm a full stack developer (contractor) at Volúpia Digital / Infoprotect in Brazil.",
             "I work on four SaaS products in production: a CRM with AI answering on WhatsApp, a platform for agencies integrated with Meta, an online learning platform and a blog content platform.",
           ],
-          links: [{ label: "See the products", href: "#work" }],
+          links: [{ label: "See my path", href: "#path" }],
           next: ["hardest", "stack"],
         },
         projects: {
@@ -596,7 +596,7 @@ export const CONTENT: Record<Lang, Content> = {
           a: [
             "A clinic using our CRM stopped getting AI replies overnight. Almost every new conversation was paused within seconds.",
             "I dug into production data and found it: the clinic's scheduling system sent automated messages from the same number, and they were recorded as if a human agent had taken over.",
-            "I fixed the rule, tested it with the real messages and re-enabled the conversations. The AI went from 2–6 replies a day back to over 150.",
+            "I fixed the rule, tested it with the real messages and re-enabled the conversations. The AI went from 2 to 6 replies a day back to over 150.",
           ],
           links: [{ label: "More stories", href: "#stories" }],
           next: ["more", "work"],
@@ -636,13 +636,13 @@ export const CONTENT: Record<Lang, Content> = {
         typing: "typing…",
         restart: "Start over",
         pick: "Questions",
-        done: "You've seen it all! Scroll down to look at the projects at your own pace.",
+        done: "You've seen every question. The projects are right below.",
         me: "Vinícius",
       },
     },
     projects: {
       title: "Projects",
-      subtitle: "Built by me, open source on GitHub.",
+      subtitle: "Personal projects, with the code on GitHub. You can try two of them right now.",
       repoLabel: "Code",
       demoLabel: "Try it live",
       moreLabel: "More details",
@@ -684,7 +684,7 @@ export const CONTENT: Record<Lang, Content> = {
           tab: "Store",
           name: "Online store with Mercado Pago",
           summary: "A storefront built in one day: catalog, cart and checkout with Pix, card and boleto.",
-          highlights: ["Prices are always read on the server, never from the browser", "Payment notifications have their signature checked"],
+          highlights: ["The price is checked on the server before the payment is created", "Payment notifications have their signature checked"],
           more: [
             "Serverless functions on Cloudflare Pages create the Mercado Pago payment.",
             "I fixed a flaw in the first version where you could edit the request and pay any price you wanted.",
@@ -698,7 +698,7 @@ export const CONTENT: Record<Lang, Content> = {
     },
     work: {
       title: "At work",
-      subtitle: "Products in production that I work on today. The code belongs to the company, so here is what I do on each.",
+      subtitle: "Products that are live and that I work on today. The code belongs to the company, so I describe what I do on each.",
       items: [
         { name: "Plotado", what: "A CRM for small businesses, with AI answering customers on WhatsApp.", role: "AI agents, WhatsApp webhooks, billing and the database." },
         { name: "X-Flow", what: "Management for marketing agencies, connected to Facebook, Instagram and ads.", role: "Integration with the Meta APIs and Meta's app review." },
@@ -708,7 +708,7 @@ export const CONTENT: Record<Lang, Content> = {
     },
     stories: {
       title: "Stories",
-      subtitle: "Real problems I solved, without client data.",
+      subtitle: "Three problems from work and what I did to fix each one.",
       readLabel: "Read the story",
       items: [
         {
@@ -729,7 +729,7 @@ export const CONTENT: Record<Lang, Content> = {
           before: { label: "Before", value: "collection stopped, no error on screen", pct: 6 },
           after: { label: "After", value: "stable collection and the app sent to Meta's review", pct: 100 },
           story: [
-            "On a platform for agencies, Instagram numbers simply stopped arriving. Nothing showed an error: collection was failing silently.",
+            "On a platform for agencies, Instagram numbers stopped arriving. Nothing showed an error: collection was failing silently.",
             "Meta had changed which metrics it accepted. I adjusted what we asked for and separated every call, so one failure couldn't take down the whole run. Expired tokens now ask to reconnect instead of failing quietly.",
             "Then I ran the app review with Meta: a video for each permission, the descriptions and the data questionnaire.",
           ],
@@ -751,15 +751,15 @@ export const CONTENT: Record<Lang, Content> = {
     experience: {
       title: "Experience",
       items: [
-        { role: "Full Stack Developer (Contractor)", company: "Volúpia Digital / Infoprotect", period: "Jun 2026 – present", summary: "SaaS products with AI, WhatsApp and Meta, from the database to the screen, plus production support." },
-        { role: "Operations Planner", company: "Orbenk", period: "Oct 2025 – May 2026", summary: "Process automation, ETL and Power BI dashboards." },
-        { role: "Database Intern", company: "Byseven", period: "Feb 2025 – Jul 2025", summary: "Oracle database support and data integration routines." },
+        { role: "Full Stack Developer (Contractor)", company: "Volúpia Digital / Infoprotect", period: "Jun 2026 to present", summary: "SaaS products with AI, WhatsApp and Meta integrations, plus keeping these systems running in production." },
+        { role: "Operations Planner", company: "Orbenk", period: "Oct 2025 to May 2026", summary: "Process automation, ETL and Power BI dashboards." },
+        { role: "Database Intern", company: "Byseven", period: "Feb 2025 to Jul 2025", summary: "Oracle database support and data integration routines." },
       ],
     },
     contact: {
       title: "Let's talk",
-      text: "I'm open to full stack roles (remote or hybrid) and freelance projects.",
-      location: "Joinville, SC — Brazil",
+      text: "I'm open to full stack roles (remote or hybrid) and to freelance projects.",
+      location: "Joinville, SC, Brazil",
     },
     switchLang: "Português",
   },
