@@ -6,6 +6,8 @@ import { SITE_URL } from "@/site";
 import { ChatExplorer } from "@/components/ChatExplorer";
 import { ProjectTabs } from "@/components/ProjectTabs";
 import { SystemMap } from "@/components/SystemMap";
+import { Shapes } from "@/components/Shapes";
+import QRCode from "qrcode";
 import { Section } from "@/components/Section";
 
 type Params = Promise<{ lang: string }>;
@@ -31,6 +33,9 @@ export default async function Home({ params }: { params: Params }) {
   };
 
   const link = "underline decoration-nevoa decoration-2 underline-offset-4 hover:decoration-sinal";
+
+  // QR code for the business card, drawn at build time as inline SVG
+  const qr = await QRCode.toString(LINKS.linkedin, { type: "svg", margin: 0, color: { dark: "#13233a", light: "#0000" } });
 
   return (
     <>
@@ -69,7 +74,9 @@ export default async function Home({ params }: { params: Params }) {
       </header>
 
       <main id="top">
-        <section className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+        <section className="tone-purple relative overflow-hidden">
+          <Shapes variant="purple" />
+          <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
           <div>
             <Image
               src={PHOTO}
@@ -77,14 +84,14 @@ export default async function Home({ params }: { params: Params }) {
               width={160}
               height={160}
               priority
-              className="size-28 rounded-[2rem] border-4 border-surface object-cover object-top shadow-[0_12px_30px_-12px_rgb(19_35_58/0.5)] sm:size-32"
+              className="size-28 rotate-[-4deg] rounded-[2rem] border-4 border-white object-cover object-top shadow-[0_12px_30px_-12px_rgb(19_35_58/0.5)] sm:size-32"
             />
             <p className="mt-6 inline-flex items-center gap-2 font-display text-sm text-entregue">
               <span aria-hidden className="h-2 w-2 rounded-full bg-entregue" />
               {c.hero.available}
             </p>
-            <h1 className="mt-3 font-display text-[clamp(2.4rem,6vw,4.4rem)] font-bold leading-[0.95] tracking-[-0.035em]">{c.hero.name}</h1>
-            <p className="mt-3 font-display text-xl font-medium text-sinal">{c.hero.role}</p>
+            <h1 className="mt-3 font-display text-[clamp(3rem,8vw,6.2rem)] font-extrabold leading-[0.88] tracking-[-0.045em]">{c.hero.name}</h1>
+            <p className="mt-4 inline-block -rotate-1 rounded-lg bg-sinal px-3 py-1 font-display text-xl font-bold text-[#13233a]">{c.hero.role}</p>
             <p className="mt-5 max-w-lg text-lg">{c.hero.intro}</p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-display text-[0.95rem] font-medium">
               <a href={c.hero.cvHref} download className="rounded-lg bg-tinta px-5 py-3 text-papel transition-colors hover:bg-sinal">
@@ -99,13 +106,14 @@ export default async function Home({ params }: { params: Params }) {
             </div>
           </div>
           <ChatExplorer script={c.chat} photo={PHOTO} name={c.chat.labels.me} />
+          </div>
         </section>
 
-        <Section id="map" title={c.map.title} subtitle={c.map.subtitle} tone="dark">
+        <Section id="map" title={c.map.title} subtitle={c.map.subtitle} tone="green">
           <SystemMap nodes={c.map.nodes} hint={c.map.hint} didLabel={c.map.didLabel} />
         </Section>
 
-        <Section id="projects" title={c.projects.title} subtitle={c.projects.subtitle} divider={false}>
+        <Section id="projects" title={c.projects.title} subtitle={c.projects.subtitle} tone="mustard">
           <ProjectTabs projects={c.projects.items} labels={c.projects} previews={c.previews} />
         </Section>
 
@@ -141,64 +149,104 @@ export default async function Home({ params }: { params: Params }) {
           </ol>
         </Section>
 
-        <Section id="stories" title={c.stories.title} subtitle={c.stories.subtitle} tone="dark">
-          <div className="grid gap-4 lg:grid-cols-3 lg:items-start">
-            {c.stories.items.map((s) => (
-              <details key={s.title} className="group rounded-3xl border border-band-line bg-white/[0.04] p-6 open:bg-white/[0.07] lg:open:col-span-3">
-                <summary className="cursor-pointer list-none">
-                  <span className="flex items-start justify-between gap-4">
-                    <span>
-                      <span className="block font-display text-2xl font-semibold leading-tight tracking-tight">{s.title}</span>
-                      <span className="mt-2 block text-band-muted">{s.teaser}</span>
-                    </span>
-                    <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full border border-band-line font-display text-xl text-entregue transition-transform group-open:rotate-45">
-                      +
-                    </span>
-                  </span>
-                  <span className="sr-only">{c.stories.readLabel}</span>
-                </summary>
-                <div className="mt-5 max-w-3xl space-y-3 border-t border-band-line pt-5">
-                  {s.story.map((p) => (
-                    <p key={p.slice(0, 40)}>{p}</p>
+        <Section id="stories" title={c.stories.title} subtitle={c.stories.subtitle} tone="pink">
+          <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+            {c.stories.items.map((st, i) => (
+              <article key={st.title} className={`tone-card rounded-3xl bg-surface p-6 shadow-[8px_8px_0_#13233a] ${i === 1 ? "lg:mt-10" : ""}`}>
+                <h3 className="font-display text-2xl font-bold leading-tight tracking-tight">{st.title}</h3>
+                <p className="mt-2 text-muted">{st.teaser}</p>
+                {/* before and after, side by side as bars */}
+                <dl className="mt-6 space-y-4 font-display">
+                  {[
+                    { bar: st.before, color: "bg-[#ff6f91]" },
+                    { bar: st.after, color: "bg-[#0f7a5f]" },
+                  ].map(({ bar, color }) => (
+                    <div key={bar.label}>
+                      <dt className="text-sm font-bold text-muted">{bar.label}</dt>
+                      <dd className="mt-1">
+                        <span className="block h-3 overflow-hidden rounded-full bg-nevoa/60">
+                          <span className={`block h-full rounded-full ${color}`} style={{ width: `${Math.max(bar.pct, 3)}%` }} />
+                        </span>
+                        <span className="mt-1.5 block text-[0.95rem] font-semibold">{bar.value}</span>
+                      </dd>
+                    </div>
                   ))}
-                  <p className="font-display text-sm text-band-muted">{s.tags.join(", ")}</p>
-                </div>
-              </details>
+                </dl>
+                <details className="group mt-6 border-t border-nevoa pt-4">
+                  <summary className="cursor-pointer list-none font-display text-sm font-bold text-sinal hover:underline">
+                    <span className="inline-block transition-transform group-open:rotate-90" aria-hidden>
+                      ›
+                    </span>{" "}
+                    {c.stories.readLabel}
+                  </summary>
+                  <div className="mt-3 space-y-3 text-[0.98rem]">
+                    {st.story.map((p) => (
+                      <p key={p.slice(0, 40)}>{p}</p>
+                    ))}
+                    <p className="font-display text-sm text-muted">{st.tags.join(", ")}</p>
+                  </div>
+                </details>
+              </article>
             ))}
           </div>
         </Section>
 
-        {/* the page ends the way it started: as a conversation */}
-        <section id="contact" aria-label={c.contact.title} className="mx-auto max-w-6xl scroll-mt-16 px-5 py-20 sm:py-28">
-          <div className="flex max-w-2xl flex-col gap-3">
-            <Image src={PHOTO} alt="" width={56} height={56} className="size-14 rounded-full object-cover object-top" />
-            {c.closing.lines.map((line, i) => (
-              <p
-                key={line}
-                className={`w-fit rounded-3xl rounded-tl-md bg-surface px-5 py-3.5 shadow-sm ${i === 0 ? "font-display text-[clamp(1.5rem,3.5vw,2.4rem)] font-bold leading-tight tracking-tight" : "text-lg"}`}
-              >
-                {line}
-              </p>
-            ))}
-            <div className="mt-4 flex flex-wrap gap-3 font-display font-medium">
-              <a href={`mailto:${LINKS.email}`} className="rounded-full bg-sinal px-5 py-3 text-white transition-colors hover:bg-tinta">
-                {c.closing.email}
-              </a>
-              <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="rounded-full border border-tinta/25 px-5 py-3 hover:border-sinal hover:text-sinal">
-                LinkedIn
-              </a>
-              <a href={c.hero.cvHref} download className="rounded-full border border-tinta/25 px-5 py-3 hover:border-sinal hover:text-sinal">
-                {c.closing.cvLabel}
-              </a>
+        {/* the page ends with a business card */}
+        <section id="contact" aria-labelledby="contact-title" className="tone-ink relative scroll-mt-16 overflow-hidden">
+          <Shapes variant="ink" />
+          <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:py-28 lg:grid-cols-[1fr_1.1fr]">
+            <div>
+              <h2 id="contact-title" className="font-display text-[clamp(2.8rem,8vw,6rem)] font-extrabold leading-[0.92] tracking-[-0.04em]">
+                {c.closing.title}
+              </h2>
+              <p className="mt-5 max-w-md text-lg text-muted">{c.closing.text}</p>
+              <div className="mt-8 flex flex-wrap gap-3 font-display font-semibold">
+                <a href={`mailto:${LINKS.email}`} className="rounded-full bg-sinal px-6 py-3 text-[#13233a] transition-transform hover:-translate-y-0.5">
+                  {c.closing.email}
+                </a>
+                <a href={c.hero.cvHref} download className="rounded-full border-2 border-white/40 px-6 py-3 hover:border-white">
+                  {c.closing.cvLabel}
+                </a>
+              </div>
             </div>
-            <p className="mt-3 font-display text-sm text-muted">
-              {LINKS.email} · {c.contact.location}
-            </p>
+
+            <div className="tone-card relative mx-auto w-full max-w-lg rotate-[-2.5deg] rounded-[1.75rem] bg-surface p-7 shadow-[12px_12px_0_#f2c14e] transition-transform hover:rotate-0 sm:p-8">
+              <div className="flex items-start justify-between gap-6">
+                <div className="min-w-0">
+                  <Image src={PHOTO} alt="" width={72} height={72} className="size-16 rounded-2xl object-cover object-top" />
+                  <p className="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight">{c.hero.name}</p>
+                  <p className="font-display font-semibold text-[#4c3bff]">{c.hero.role}</p>
+                  <p className="mt-1 text-sm text-muted">{c.contact.location}</p>
+                </div>
+                <figure className="shrink-0 text-center">
+                  <div className="size-28 rounded-xl bg-white p-2 ring-1 ring-nevoa sm:size-32" dangerouslySetInnerHTML={{ __html: qr }} />
+                  <figcaption className="mt-2 max-w-[8rem] font-display text-[0.7rem] leading-tight text-muted">{c.closing.qr}</figcaption>
+                </figure>
+              </div>
+              <ul className="mt-6 space-y-1.5 border-t border-dashed border-nevoa pt-5 font-display text-[0.95rem]">
+                <li>
+                  <a href={`mailto:${LINKS.email}`} className="break-all hover:text-[#4c3bff]">
+                    {LINKS.email}
+                  </a>
+                </li>
+                <li>
+                  <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="hover:text-[#4c3bff]">
+                    linkedin.com/in/vinicius-fontanella
+                  </a>
+                </li>
+                <li>
+                  <a href={LINKS.github} target="_blank" rel="noreferrer" className="hover:text-[#4c3bff]">
+                    github.com/fontanella01
+                  </a>
+                </li>
+                <li className="text-muted">{c.closing.site}</li>
+              </ul>
+            </div>
           </div>
         </section>
       </main>
 
-      <footer className="mt-8 border-t border-nevoa py-8 text-center font-display text-sm text-muted">
+      <footer className="tone-ink border-t border-white/10 py-8 text-center font-display text-sm text-muted">
         © {new Date().getFullYear()} {c.hero.name}
       </footer>
     </>

@@ -58,6 +58,79 @@
   --font-serif: var(--font-source-serif);
 }
 
+/* Colored sections. Each one redefines the palette variables for everything inside
+   it, so the same components read correctly on any background and in both themes. */
+.tone-purple {
+  background: #4c3bff;
+  --tinta: #ffffff;
+  --papel: #4c3bff;
+  --muted: #dcd7ff;
+  --nevoa: rgb(255 255 255 / 0.3);
+  --sinal: #f2c14e;
+  --entregue: #7cf5c8;
+  color: var(--tinta);
+}
+.tone-green {
+  background: #0f7a5f;
+  --tinta: #ffffff;
+  --muted: #cdede2;
+  --nevoa: rgb(255 255 255 / 0.3);
+  --band: #0f7a5f;
+  --band-text: #ffffff;
+  --band-muted: #cdede2;
+  --band-line: rgb(255 255 255 / 0.3);
+  --sinal: #4c3bff;
+  --entregue: #f2c14e;
+  color: var(--tinta);
+}
+.tone-mustard {
+  background: #f2c14e;
+  --tinta: #13233a;
+  --papel: #fff6da;
+  --surface: #fffdf6;
+  --muted: #4a4320;
+  --nevoa: rgb(19 35 58 / 0.22);
+  --sinal: #3424d6;
+  --sinal-soft: #e4e1ff;
+  --entregue: #0f7a5f;
+  --bubble-in: #ffffff;
+  --bubble-out: #dff3ea;
+  color: var(--tinta);
+}
+.tone-pink {
+  background: #ff6f91;
+  --tinta: #13233a;
+  --muted: #4b1d2c;
+  --nevoa: rgb(19 35 58 / 0.25);
+  --sinal: #3424d6;
+  --entregue: #0f7a5f;
+  color: var(--tinta);
+}
+.tone-ink {
+  background: #13233a;
+  --tinta: #ffffff;
+  --muted: #afc0d6;
+  --nevoa: rgb(255 255 255 / 0.2);
+  --sinal: #f2c14e;
+  --entregue: #7cf5c8;
+  color: var(--tinta);
+}
+/* White cards placed on colored sections (the chat, the business card, story
+   cards): back to the light palette whatever the section or theme. */
+.tone-card {
+  --tinta: #13233a;
+  --papel: #eef2f7;
+  --surface: #ffffff;
+  --muted: #4a5a70;
+  --nevoa: #d5dce6;
+  --sinal: #4c3bff;
+  --sinal-soft: #e4e1ff;
+  --entregue: #1f9e7a;
+  --bubble-in: #ffffff;
+  --bubble-out: #dff3ea;
+  color: var(--tinta);
+}
+
 html {
   scroll-behavior: smooth;
 }

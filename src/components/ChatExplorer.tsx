@@ -64,7 +64,7 @@ export function ChatExplorer({ script, photo, name }: { script: ChatScript; phot
   const options = available(script, asked);
 
   return (
-    <section aria-label={script.labels.pick} className="flex h-[36rem] w-full max-w-md flex-col overflow-hidden rounded-3xl border border-nevoa bg-surface shadow-[0_24px_60px_-30px_rgb(19_35_58/0.45)] lg:justify-self-end">
+    <section aria-label={script.labels.pick} className="tone-card flex h-[36rem] w-full max-w-md flex-col overflow-hidden rounded-3xl border border-nevoa bg-surface shadow-[0_24px_60px_-30px_rgb(19_35_58/0.45)] lg:justify-self-end">
       <header className="flex items-center gap-3 border-b border-nevoa px-5 py-3.5">
         <Image src={photo} alt="" width={40} height={40} className="size-10 rounded-full object-cover object-top" />
         <div className="leading-tight">
