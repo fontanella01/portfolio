@@ -65,10 +65,11 @@ export default async function Home({ params }: { params: Params }) {
   const primary = "rounded-full bg-sinal px-4 py-2 text-white transition-colors hover:bg-tinta";
   const secondary = "rounded-full border border-tinta/20 bg-white px-4 py-2 transition-colors hover:border-sinal hover:text-sinal";
 
+  // the first message of the chat: my contact card
   const profile = (
-    <div>
-      <Image src={PHOTO} alt={c.hero.photoAlt} width={192} height={192} priority className="size-24 rounded-3xl object-cover object-top shadow-[0_14px_30px_-14px_rgb(19_35_58/0.55)]" />
-      <h1 className="mt-6 font-display text-[clamp(2.9rem,7.5vw,5.4rem)] font-extrabold leading-[0.9] tracking-[-0.045em]">{c.hero.name}</h1>
+    <div className="w-full rounded-3xl rounded-tl-md bg-white p-6 shadow-sm sm:p-8">
+      <Image src={PHOTO} alt={c.hero.photoAlt} width={160} height={160} priority className="size-20 rounded-2xl object-cover object-top" />
+      <h1 className="mt-5 font-display text-[clamp(2.5rem,5.5vw,4.4rem)] font-extrabold leading-[0.9] tracking-[-0.045em]">{c.hero.name}</h1>
       <p className="mt-4 inline-block -rotate-1 rounded-lg bg-[#f6dc93] px-3 py-1 font-display text-xl font-bold text-[#13233a]">{c.hero.role}</p>
       <p className="mt-3 font-display text-sm text-muted">
         {c.contact.location}

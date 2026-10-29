@@ -57,7 +57,9 @@ export function Inbox({
   }, [convos, aliases]);
 
   return (
-    <div className="flex h-dvh overflow-hidden">
+    // on very wide screens the app sits in a window of fixed width instead of stretching
+    <div className="h-dvh bg-[#dfe5ee] 2xl:p-6">
+    <div className="mx-auto flex h-full max-w-[1600px] overflow-hidden 2xl:rounded-3xl 2xl:border 2xl:border-nevoa 2xl:shadow-[0_30px_80px_-40px_rgb(19_35_58/0.35)]">
       <aside
         aria-label={listTitle}
         className={`tone-card w-full shrink-0 flex-col border-r border-nevoa bg-surface lg:flex lg:w-[22rem] ${view === "list" ? "flex" : "hidden"}`}
@@ -117,7 +119,7 @@ export function Inbox({
             ) : (
               <>
                 <div className="min-h-0 flex-1 overflow-y-auto">
-                  <div key={active === c.id ? "on" : "off"} className={`step-in mx-auto flex flex-col gap-3 px-4 py-8 sm:px-8 ${c.wide ? "max-w-6xl" : "max-w-3xl"}`}>
+                  <div key={active === c.id ? "on" : "off"} className={`step-in mx-auto flex min-h-full flex-col justify-end gap-3 px-4 py-8 sm:px-8 ${c.wide ? "max-w-6xl" : "max-w-3xl"}`}>
                     {c.body}
                   </div>
                 </div>
@@ -139,6 +141,7 @@ export function Inbox({
           </section>
         ))}
       </main>
+    </div>
     </div>
   );
 }

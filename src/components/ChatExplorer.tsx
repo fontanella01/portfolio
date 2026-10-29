@@ -67,9 +67,10 @@ export function ChatExplorer({ script, top }: { script: ChatScript; top: ReactNo
   return (
     <>
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-3xl px-4 py-8 sm:px-8">
+        {/* messages rest at the bottom, next to the questions, as in any chat */}
+        <div className="mx-auto flex min-h-full max-w-3xl flex-col justify-end px-4 py-8 sm:px-8">
           {top}
-          <ol aria-live="polite" aria-label={script.labels.pick} className="mt-8 flex flex-col gap-2.5 font-display text-[0.97rem] leading-snug">
+          <ol aria-live="polite" aria-label={script.labels.pick} className="mt-2.5 flex flex-col gap-2.5 font-display text-[0.97rem] leading-snug">
             {script.intro.map((text, i) => (
               <li key={`intro-${i}`} style={{ "--d": `${0.5 + i * 0.7}s` } as React.CSSProperties} className="chat-item max-w-[85%] self-start rounded-2xl rounded-tl-md bg-bubble-in px-4 py-2.5 shadow-sm">
                 {text}
