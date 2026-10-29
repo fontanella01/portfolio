@@ -44,7 +44,7 @@ export function SystemMap({ nodes, hint, didLabel }: { nodes: Record<NodeId, Map
         aria-pressed={active}
         onClick={() => setSelected(id)}
         className={`rounded-2xl border px-4 py-3 text-left font-display leading-tight transition-colors ${
-          active ? "border-sinal bg-sinal text-white shadow-[0_0_0_6px_rgb(76_59_255/0.25)]" : "border-band-line bg-band text-band-text hover:border-sinal"
+          active ? "border-sinal bg-sinal text-white shadow-[0_0_0_6px_rgb(76_59_255/0.25)]" : "border-band-line bg-white/80 text-band-text hover:border-sinal"
         } ${extra}`}
       >
         <span className="block text-[0.95rem] font-semibold">{nodes[id].label}</span>
@@ -89,12 +89,12 @@ export function SystemMap({ nodes, hint, didLabel }: { nodes: Record<NodeId, Map
       {/* phones: the same pieces as a grid */}
       <div className="grid grid-cols-2 gap-3 md:hidden">{NODE_IDS.map((id) => nodeButton(id))}</div>
 
-      <article aria-live="polite" className="rounded-3xl border border-band-line bg-white/[0.04] p-6 sm:p-7">
+      <article aria-live="polite" className="rounded-3xl border border-band-line bg-white/75 p-6 sm:p-7">
         <p className="font-display text-sm text-band-muted">{hint}</p>
         <h3 key={selected} className="step-in mt-2 font-display text-3xl font-bold tracking-tight">
           {node.label}
         </h3>
-        <p key={`${selected}-w`} className="step-in mt-3 text-band-text/90">
+        <p key={`${selected}-w`} className="step-in mt-3 text-band-text">
           {node.what}
         </p>
         <h4 className="mt-5 font-display text-sm font-semibold text-entregue">{didLabel}</h4>

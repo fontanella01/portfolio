@@ -1,9 +1,10 @@
 // Flat geometric shapes in the neighbouring section colors. Pure decoration:
 // hidden from screen readers and kept behind the content.
-const PURPLE = "#4c3bff";
-const GREEN = "#0f7a5f";
-const MUSTARD = "#f2c14e";
-const PINK = "#ff6f91";
+// softer tints of the palette, so the shapes accent the sections without shouting
+const PURPLE = "#c9c1ff";
+const GREEN = "#a9dcc8";
+const MUSTARD = "#f6dc93";
+const PINK = "#ffbfcd";
 
 type Variant = "purple" | "green" | "mustard" | "pink" | "ink";
 
@@ -48,7 +49,7 @@ export function Shapes({ variant }: { variant: Variant }) {
       aria-hidden
       viewBox="0 0 1240 700"
       preserveAspectRatio="xMidYMid slice"
-      className="pointer-events-none absolute inset-0 h-full w-full opacity-90"
+      className="pointer-events-none absolute inset-0 h-full w-full opacity-80"
     >
       {SETS[variant]}
     </svg>

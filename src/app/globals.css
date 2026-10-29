@@ -58,39 +58,39 @@
   --font-serif: var(--font-source-serif);
 }
 
-/* Colored sections. Each one redefines the palette variables for everything inside
+/* Soft colored sections. Each one redefines the palette variables for everything inside
    it, so the same components read correctly on any background and in both themes. */
 .tone-purple {
-  background: #4c3bff;
-  --tinta: #ffffff;
-  --papel: #4c3bff;
-  --muted: #dcd7ff;
-  --nevoa: rgb(255 255 255 / 0.3);
-  --sinal: #f2c14e;
-  --entregue: #7cf5c8;
+  background: #e7e3ff;
+  --tinta: #13233a;
+  --papel: #e7e3ff;
+  --muted: #4b4870;
+  --nevoa: rgb(19 35 58 / 0.16);
+  --sinal: #4c3bff;
+  --entregue: #0f7a5f;
   color: var(--tinta);
 }
 .tone-green {
-  background: #0f7a5f;
-  --tinta: #ffffff;
-  --muted: #cdede2;
-  --nevoa: rgb(255 255 255 / 0.3);
-  --band: #0f7a5f;
-  --band-text: #ffffff;
-  --band-muted: #cdede2;
-  --band-line: rgb(255 255 255 / 0.3);
+  background: #d9f1e8;
+  --tinta: #13233a;
+  --muted: #3e5a51;
+  --nevoa: rgb(19 35 58 / 0.16);
+  --band: #d9f1e8;
+  --band-text: #13233a;
+  --band-muted: #3e5a51;
+  --band-line: rgb(19 35 58 / 0.18);
   --sinal: #4c3bff;
-  --entregue: #f2c14e;
+  --entregue: #0f7a5f;
   color: var(--tinta);
 }
 .tone-mustard {
-  background: #f2c14e;
+  background: #fcf0cc;
   --tinta: #13233a;
-  --papel: #fff6da;
+  --papel: #fff8e3;
   --surface: #fffdf6;
-  --muted: #4a4320;
-  --nevoa: rgb(19 35 58 / 0.22);
-  --sinal: #3424d6;
+  --muted: #5a5232;
+  --nevoa: rgb(19 35 58 / 0.16);
+  --sinal: #4c3bff;
   --sinal-soft: #e4e1ff;
   --entregue: #0f7a5f;
   --bubble-in: #ffffff;
@@ -98,21 +98,21 @@
   color: var(--tinta);
 }
 .tone-pink {
-  background: #ff6f91;
+  background: #ffe4ea;
   --tinta: #13233a;
-  --muted: #4b1d2c;
-  --nevoa: rgb(19 35 58 / 0.25);
-  --sinal: #3424d6;
+  --muted: #6a3a48;
+  --nevoa: rgb(19 35 58 / 0.16);
+  --sinal: #4c3bff;
   --entregue: #0f7a5f;
   color: var(--tinta);
 }
 .tone-ink {
-  background: #13233a;
-  --tinta: #ffffff;
-  --muted: #afc0d6;
-  --nevoa: rgb(255 255 255 / 0.2);
-  --sinal: #f2c14e;
-  --entregue: #7cf5c8;
+  background: #e2e8f1;
+  --tinta: #13233a;
+  --muted: #4a5a70;
+  --nevoa: rgb(19 35 58 / 0.16);
+  --sinal: #4c3bff;
+  --entregue: #0f7a5f;
   color: var(--tinta);
 }
 /* White cards placed on colored sections (the chat, the business card, story

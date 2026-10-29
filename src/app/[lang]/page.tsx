@@ -7,6 +7,7 @@ import { ChatExplorer } from "@/components/ChatExplorer";
 import { ProjectTabs } from "@/components/ProjectTabs";
 import { SystemMap } from "@/components/SystemMap";
 import { Shapes } from "@/components/Shapes";
+import { Sidebar } from "@/components/Sidebar";
 import QRCode from "qrcode";
 import { Section } from "@/components/Section";
 
@@ -45,7 +46,7 @@ export default async function Home({ params }: { params: Params }) {
         {lang === "pt" ? "Pular para o conteúdo" : "Skip to content"}
       </a>
 
-      <header className="sticky top-0 z-10 border-b border-nevoa/70 bg-papel/85 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b border-nevoa/70 bg-papel/85 backdrop-blur lg:hidden">
         <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5 font-display text-sm">
           <a href="#top" className="font-semibold tracking-tight">
             Vinícius F. Kleis
@@ -73,8 +74,28 @@ export default async function Home({ params }: { params: Params }) {
         </nav>
       </header>
 
+      <Sidebar
+        items={[
+          { id: "map", label: c.nav.map },
+          { id: "projects", label: c.nav.projects },
+          { id: "path", label: c.nav.path },
+          { id: "stories", label: c.nav.stories },
+          { id: "contact", label: c.nav.contact },
+        ]}
+        name={c.hero.name}
+        role={c.hero.role}
+        photo={PHOTO}
+        available={c.hero.available}
+        switchHref={`/${other}`}
+        switchLabel={c.switchLang}
+        switchLang={other === "pt" ? "pt-BR" : "en"}
+        links={LINKS}
+        navLabel={lang === "pt" ? "Seções" : "Sections"}
+      />
+
+      <div className="lg:pl-64">
       <main id="top">
-        <section className="tone-purple relative overflow-hidden">
+        <section id="intro" className="tone-purple relative overflow-hidden">
           <Shapes variant="purple" />
           <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
           <div>
@@ -84,14 +105,14 @@ export default async function Home({ params }: { params: Params }) {
               width={160}
               height={160}
               priority
-              className="size-28 rotate-[-4deg] rounded-[2rem] border-4 border-white object-cover object-top shadow-[0_12px_30px_-12px_rgb(19_35_58/0.5)] sm:size-32"
+              className="size-28 rotate-[-4deg] rounded-[2rem] border-4 border-white object-cover lg:hidden object-top shadow-[0_12px_30px_-12px_rgb(19_35_58/0.5)] sm:size-32"
             />
-            <p className="mt-6 inline-flex items-center gap-2 font-display text-sm text-entregue">
+            <p className="mt-6 inline-flex items-center gap-2 font-display text-sm text-entregue lg:hidden">
               <span aria-hidden className="h-2 w-2 rounded-full bg-entregue" />
               {c.hero.available}
             </p>
-            <h1 className="mt-3 font-display text-[clamp(3rem,8vw,6.2rem)] font-extrabold leading-[0.88] tracking-[-0.045em]">{c.hero.name}</h1>
-            <p className="mt-4 inline-block -rotate-1 rounded-lg bg-sinal px-3 py-1 font-display text-xl font-bold text-[#13233a]">{c.hero.role}</p>
+            <h1 className="mt-3 font-display lg:mt-0 text-[clamp(3rem,8vw,6.2rem)] font-extrabold leading-[0.88] tracking-[-0.045em]">{c.hero.name}</h1>
+            <p className="mt-4 inline-block -rotate-1 rounded-lg bg-[#f6dc93] px-3 py-1 font-display text-xl font-bold text-[#13233a]">{c.hero.role}</p>
             <p className="mt-5 max-w-lg text-lg">{c.hero.intro}</p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-display text-[0.95rem] font-medium">
               <a href={c.hero.cvHref} download className="rounded-lg bg-tinta px-5 py-3 text-papel transition-colors hover:bg-sinal">
@@ -152,13 +173,13 @@ export default async function Home({ params }: { params: Params }) {
         <Section id="stories" title={c.stories.title} subtitle={c.stories.subtitle} tone="pink">
           <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
             {c.stories.items.map((st, i) => (
-              <article key={st.title} className={`tone-card rounded-3xl bg-surface p-6 shadow-[8px_8px_0_#13233a] ${i === 1 ? "lg:mt-10" : ""}`}>
+              <article key={st.title} className={`tone-card rounded-3xl bg-surface p-6 shadow-[8px_8px_0_rgb(19_35_58/0.12)] ${i === 1 ? "lg:mt-10" : ""}`}>
                 <h3 className="font-display text-2xl font-bold leading-tight tracking-tight">{st.title}</h3>
                 <p className="mt-2 text-muted">{st.teaser}</p>
                 {/* before and after, side by side as bars */}
                 <dl className="mt-6 space-y-4 font-display">
                   {[
-                    { bar: st.before, color: "bg-[#ff6f91]" },
+                    { bar: st.before, color: "bg-[#f58fa6]" },
                     { bar: st.after, color: "bg-[#0f7a5f]" },
                   ].map(({ bar, color }) => (
                     <div key={bar.label}>
@@ -201,16 +222,16 @@ export default async function Home({ params }: { params: Params }) {
               </h2>
               <p className="mt-5 max-w-md text-lg text-muted">{c.closing.text}</p>
               <div className="mt-8 flex flex-wrap gap-3 font-display font-semibold">
-                <a href={`mailto:${LINKS.email}`} className="rounded-full bg-sinal px-6 py-3 text-[#13233a] transition-transform hover:-translate-y-0.5">
+                <a href={`mailto:${LINKS.email}`} className="rounded-full bg-sinal px-6 py-3 text-white transition-transform hover:-translate-y-0.5">
                   {c.closing.email}
                 </a>
-                <a href={c.hero.cvHref} download className="rounded-full border-2 border-white/40 px-6 py-3 hover:border-white">
+                <a href={c.hero.cvHref} download className="rounded-full border-2 border-tinta/20 px-6 py-3 hover:border-sinal hover:text-sinal">
                   {c.closing.cvLabel}
                 </a>
               </div>
             </div>
 
-            <div className="tone-card relative mx-auto w-full max-w-lg rotate-[-2.5deg] rounded-[1.75rem] bg-surface p-7 shadow-[12px_12px_0_#f2c14e] transition-transform hover:rotate-0 sm:p-8">
+            <div className="tone-card relative mx-auto w-full max-w-lg rotate-[-2.5deg] rounded-[1.75rem] bg-surface p-7 shadow-[12px_12px_0_#f6dc93] transition-transform hover:rotate-0 sm:p-8">
               <div className="flex items-start justify-between gap-6">
                 <div className="min-w-0">
                   <Image src={PHOTO} alt="" width={72} height={72} className="size-16 rounded-2xl object-cover object-top" />
@@ -246,9 +267,10 @@ export default async function Home({ params }: { params: Params }) {
         </section>
       </main>
 
-      <footer className="tone-ink border-t border-white/10 py-8 text-center font-display text-sm text-muted">
+      <footer className="tone-ink border-t border-nevoa py-8 text-center font-display text-sm text-muted">
         © {new Date().getFullYear()} {c.hero.name}
       </footer>
+      </div>
     </>
   );
 }
