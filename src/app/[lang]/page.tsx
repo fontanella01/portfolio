@@ -1,18 +1,45 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import QRCode from "qrcode";
 import { CONTENT, LINKS, isLang } from "@/content";
 import { SITE_URL } from "@/site";
 import { ChatExplorer } from "@/components/ChatExplorer";
-import { ProjectTabs } from "@/components/ProjectTabs";
+import { Inbox, type Convo } from "@/components/Inbox";
+import { HelpDeskPreview, RelayPreview, StorePreview } from "@/components/Previews";
 import { SystemMap } from "@/components/SystemMap";
-import { Sidebar } from "@/components/Sidebar";
-import QRCode from "qrcode";
-import { Section } from "@/components/Section";
 
 type Params = Promise<{ lang: string }>;
 
 const PHOTO = "/vinicius.jpg";
+
+// Avatar tints, one per kind of conversation (they match the pane backgrounds).
+const TINT = { purple: "#c9c1ff", green: "#a9dcc8", mustard: "#f6dc93", ink: "#cdd6e3", pink: "#ffbfcd", sky: "#b9dafc" };
+
+// Old section links (#projects, #stories…) still land on a conversation.
+const ALIASES = { top: "intro", projects: "p-relay", stories: "story-1", work: "path" };
+
+function Photo() {
+  return <Image src={PHOTO} alt="" width={44} height={44} className="size-11 shrink-0 rounded-full object-cover object-top" />;
+}
+
+function Letter({ text, tint }: { text: string; tint: string }) {
+  return (
+    <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-full font-display text-lg font-bold text-[#13233a]" style={{ background: tint }}>
+      {text}
+    </span>
+  );
+}
+
+// A message from me. Long texts read in the serif, like a letter inside the chat.
+function Bubble({ children }: { children: React.ReactNode }) {
+  return <div className="max-w-[88%] self-start rounded-2xl rounded-tl-md bg-bubble-in px-4 py-3 shadow-sm">{children}</div>;
+}
+
+// Something sent along with the messages: a preview, a card, a set of screens.
+function Attachment({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`self-start rounded-2xl bg-white/80 p-3 shadow-sm ${className}`}>{children}</div>;
+}
 
 export default async function Home({ params }: { params: Params }) {
   const { lang } = await params;
@@ -32,236 +59,297 @@ export default async function Home({ params }: { params: Params }) {
     sameAs: [LINKS.github, LINKS.linkedin],
   };
 
-  const link = "underline decoration-nevoa decoration-2 underline-offset-4 hover:decoration-sinal";
-
   // QR code for the business card, drawn at build time as inline SVG
   const qr = await QRCode.toString(LINKS.linkedin, { type: "svg", margin: 0, color: { dark: "#13233a", light: "#0000" } });
+
+  const primary = "rounded-full bg-sinal px-4 py-2 text-white transition-colors hover:bg-tinta";
+  const secondary = "rounded-full border border-tinta/20 bg-white px-4 py-2 transition-colors hover:border-sinal hover:text-sinal";
+
+  const profile = (
+    <div>
+      <Image src={PHOTO} alt={c.hero.photoAlt} width={192} height={192} priority className="size-24 rounded-3xl object-cover object-top shadow-[0_14px_30px_-14px_rgb(19_35_58/0.55)]" />
+      <h1 className="mt-6 font-display text-[clamp(2.9rem,7.5vw,5.4rem)] font-extrabold leading-[0.9] tracking-[-0.045em]">{c.hero.name}</h1>
+      <p className="mt-4 inline-block -rotate-1 rounded-lg bg-[#f6dc93] px-3 py-1 font-display text-xl font-bold text-[#13233a]">{c.hero.role}</p>
+      <p className="mt-3 font-display text-sm text-muted">
+        {c.contact.location}
+        <span className="ml-3 inline-flex items-center gap-1.5 text-entregue">
+          <span aria-hidden className="h-2 w-2 rounded-full bg-entregue" />
+          {c.hero.available}
+        </span>
+      </p>
+      <p className="mt-5 max-w-xl text-lg">{c.hero.intro}</p>
+      <div className="mt-6 flex flex-wrap gap-2 font-display text-[0.95rem] font-medium">
+        <a href={c.hero.cvHref} download className="rounded-full bg-tinta px-5 py-2.5 text-papel transition-colors hover:bg-sinal">
+          {c.hero.cv}
+        </a>
+        <a href={LINKS.github} target="_blank" rel="noreferrer" className={secondary}>
+          GitHub
+        </a>
+        <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className={secondary}>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  );
+
+  const projects: Convo[] = c.projects.items.map((p) => ({
+    id: `p-${p.id}`,
+    name: p.tab,
+    preview: p.summary,
+    avatar: <Letter text={p.tab[0]} tint={TINT.mustard} />,
+    group: c.projects.title,
+    subtitle: p.stack.slice(0, 4).join(", "),
+    tone: "tone-mustard",
+    actions: (
+      <>
+        {p.demo && (
+          <a href={p.demo} target="_blank" rel="noreferrer" className={primary}>
+            {c.projects.demoLabel}
+          </a>
+        )}
+        <a href={p.repo} target="_blank" rel="noreferrer" className={secondary}>
+          {c.projects.repoLabel}
+        </a>
+      </>
+    ),
+    body: (
+      <>
+        <Bubble>
+          <p className="font-display text-lg font-semibold leading-snug">{p.name}</p>
+          <p className="mt-1">{p.summary}</p>
+        </Bubble>
+        <Attachment className="w-full max-w-md">
+          {p.id === "relay" ? (
+            <RelayPreview t={c.previews.relay} label={p.name} />
+          ) : p.id === "helpdesk" ? (
+            <HelpDeskPreview t={c.previews.helpdesk} label={p.name} />
+          ) : (
+            <StorePreview t={c.previews.store} label={p.name} />
+          )}
+        </Attachment>
+        <Bubble>
+          <ul className="list-disc space-y-1 pl-5 marker:text-sinal">
+            {p.highlights.map((h) => (
+              <li key={h}>{h}</li>
+            ))}
+          </ul>
+        </Bubble>
+        <Attachment>
+          <ul aria-label={c.inbox.screens} className="grid grid-cols-3 gap-2">
+            {p.images.map((img) => (
+              <li key={img.src}>
+                <a href={img.src} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-xl ring-1 ring-nevoa transition-shadow hover:ring-2 hover:ring-sinal">
+                  <Image src={img.src} alt={img.alt} width={360} height={225} className="aspect-[16/10] w-full object-cover object-top" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Attachment>
+        <Bubble>
+          <ul className="list-disc space-y-1 pl-5 marker:text-sinal">
+            {p.more.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
+          <p className="mt-2 font-display text-sm text-muted">{p.stack.join(", ")}</p>
+        </Bubble>
+      </>
+    ),
+  }));
+
+  const stories: Convo[] = c.stories.items.map((st, i) => ({
+    id: `story-${i + 1}`,
+    name: st.title,
+    preview: st.teaser,
+    avatar: <Letter text={String(i + 1)} tint={TINT.pink} />,
+    group: c.stories.title,
+    subtitle: st.tags.join(", "),
+    tone: "tone-pink",
+    body: (
+      <>
+        <Bubble>
+          <p className="font-display text-lg font-semibold leading-snug">{st.teaser}</p>
+        </Bubble>
+        <Attachment className="w-full max-w-lg">
+          <dl className="grid grid-cols-2 gap-2 font-display">
+            {[st.before, st.after].map((side, k) => (
+              <div key={side.label} className={`rounded-xl p-3 ${k ? "bg-[#dff3ea]" : "bg-[#fff0f3]"}`}>
+                <dt className="text-sm text-muted">{side.label}</dt>
+                <dd className={`mt-0.5 leading-snug ${k ? "font-semibold text-[#0f7a5f]" : ""}`}>{side.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </Attachment>
+        {st.story.map((text) => (
+          <Bubble key={text.slice(0, 40)}>{text}</Bubble>
+        ))}
+      </>
+    ),
+  }));
+
+  const convos: Convo[] = [
+    {
+      id: "intro",
+      name: c.chat.labels.me,
+      preview: c.chat.intro[0],
+      avatar: <Photo />,
+      subtitle: c.hero.available,
+      tone: "tone-purple",
+      ownScroll: true,
+      body: <ChatExplorer script={c.chat} top={profile} />,
+    },
+    {
+      id: "map",
+      name: c.nav.map,
+      preview: c.map.subtitle,
+      avatar: <Letter text={c.nav.map[0]} tint={TINT.green} />,
+      subtitle: Object.values(c.map.nodes)
+        .map((n) => n.label)
+        .join(", "),
+      tone: "tone-green",
+      wide: true,
+      body: (
+        <>
+          <Bubble>{c.map.subtitle}</Bubble>
+          <div className="mt-2 w-full">
+            <SystemMap nodes={c.map.nodes} hint={c.map.hint} didLabel={c.map.didLabel} />
+          </div>
+        </>
+      ),
+    },
+    {
+      id: "path",
+      name: c.nav.path,
+      preview: `${c.experience.items[0].role}, ${c.experience.items[0].company}`,
+      avatar: <Letter text={c.nav.path[0]} tint={TINT.sky} />,
+      subtitle: c.trajectory.subtitle,
+      tone: "tone-sky",
+      body: (
+        <>
+          <Bubble>{c.trajectory.subtitle}</Bubble>
+          {c.experience.items.map((job, i) => (
+            <div key={job.company} className="contents">
+              <p className="mt-4 self-center rounded-full bg-white/70 px-3 py-1 font-display text-sm text-muted">{job.period}</p>
+              <Bubble>
+                <p className="font-display text-lg font-semibold leading-snug">{job.role}</p>
+                <p className="font-display text-muted">{job.company}</p>
+                <p className="mt-2">{job.summary}</p>
+              </Bubble>
+              {i === 0 && (
+                <Attachment className="w-full">
+                  <p className="px-1 pb-2 font-display text-sm font-semibold">{c.trajectory.productsLabel}</p>
+                  <dl className="grid gap-2 sm:grid-cols-2">
+                    {c.work.items.map((p) => (
+                      <div key={p.name} className="rounded-xl bg-[#f3f5f9] p-3">
+                        <dt className="font-display font-semibold">{p.name}</dt>
+                        <dd className="mt-0.5 text-[0.95rem]">{p.what}</dd>
+                        <dd className="mt-1 text-[0.95rem] text-muted">{p.role}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </Attachment>
+              )}
+            </div>
+          ))}
+        </>
+      ),
+    },
+    ...projects,
+    ...stories,
+    {
+      id: "contact",
+      name: c.closing.title,
+      group: c.nav.contact,
+      preview: c.closing.text,
+      avatar: <Photo />,
+      subtitle: c.contact.location,
+      tone: "tone-ink",
+      actions: (
+        <>
+          <a href={`mailto:${LINKS.email}`} className={primary}>
+            {c.closing.email}
+          </a>
+          <a href={c.hero.cvHref} download className={secondary}>
+            {c.closing.cvLabel}
+          </a>
+        </>
+      ),
+      body: (
+        <>
+          <Bubble>{c.closing.text}</Bubble>
+          <div className="tone-card mt-2 w-full max-w-lg self-start rounded-[1.75rem] bg-surface p-6 shadow-[10px_10px_0_#f6dc93] sm:p-7">
+            <div className="flex items-start justify-between gap-5">
+              <div className="min-w-0">
+                <Image src={PHOTO} alt="" width={72} height={72} className="size-16 rounded-2xl object-cover object-top" />
+                <p className="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight">{c.hero.name}</p>
+                <p className="font-display font-semibold text-[#4c3bff]">{c.hero.role}</p>
+                <p className="mt-1 text-sm text-muted">{c.contact.location}</p>
+              </div>
+              <figure className="shrink-0 text-center">
+                <div className="size-24 rounded-xl bg-white p-2 ring-1 ring-nevoa sm:size-28" dangerouslySetInnerHTML={{ __html: qr }} />
+                <figcaption className="mt-2 max-w-[7rem] font-display text-[0.7rem] leading-tight text-muted">{c.closing.qr}</figcaption>
+              </figure>
+            </div>
+            <ul className="mt-5 space-y-1.5 border-t border-dashed border-nevoa pt-4 font-display text-[0.95rem]">
+              <li>
+                <a href={`mailto:${LINKS.email}`} className="break-all hover:text-[#4c3bff]">
+                  {LINKS.email}
+                </a>
+              </li>
+              <li>
+                <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="hover:text-[#4c3bff]">
+                  linkedin.com/in/vinicius-fontanella
+                </a>
+              </li>
+              <li>
+                <a href={LINKS.github} target="_blank" rel="noreferrer" className="hover:text-[#4c3bff]">
+                  github.com/fontanella01
+                </a>
+              </li>
+              <li className="text-muted">{c.closing.site}</li>
+            </ul>
+          </div>
+        </>
+      ),
+    },
+  ];
+
+  // each conversation offers the following one, so the list can be read in order
+  convos.forEach((cv, i) => {
+    const nxt = convos[i + 1];
+    if (nxt && !cv.ownScroll) cv.next = [{ id: nxt.id, label: `${c.inbox.next}: ${nxt.name}` }];
+  });
+
+  const listTop = (
+    <div className="flex items-center justify-between gap-3 px-5 pb-2 pt-5">
+      <p className="font-display text-2xl font-bold tracking-tight">{c.inbox.title}</p>
+      <Link href={`/${other}`} hrefLang={other === "pt" ? "pt-BR" : "en"} className="rounded-full border border-nevoa px-3 py-1 font-display text-sm text-muted hover:border-sinal hover:text-sinal">
+        {c.switchLang}
+      </Link>
+    </div>
+  );
+
+  const listBottom = (
+    <div className="flex gap-4 border-t border-nevoa px-5 py-3 font-display text-sm text-muted">
+      <a href={LINKS.github} target="_blank" rel="noreferrer" className="hover:text-sinal">
+        GitHub
+      </a>
+      <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="hover:text-sinal">
+        LinkedIn
+      </a>
+      <a href={`mailto:${LINKS.email}`} className="hover:text-sinal">
+        E-mail
+      </a>
+    </div>
+  );
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }} />
-
-      <a href="#top" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-20 focus:rounded focus:bg-surface focus:px-3 focus:py-2">
+      <a href="#content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-20 focus:rounded focus:bg-surface focus:px-3 focus:py-2">
         {lang === "pt" ? "Pular para o conteúdo" : "Skip to content"}
       </a>
-
-      <header className="sticky top-0 z-10 border-b border-nevoa/70 bg-papel/85 backdrop-blur lg:hidden">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5 font-display text-sm">
-          <a href="#top" className="font-semibold tracking-tight">
-            Vinícius F. Kleis
-          </a>
-          <div className="flex items-center gap-5 text-muted">
-            {(
-              [
-                ["#map", c.nav.map],
-                ["#projects", c.nav.projects],
-                ["#path", c.nav.path],
-                ["#stories", c.nav.stories],
-              ] as const
-            ).map(([href, label]) => (
-              <a key={href} href={href} className="hidden hover:text-tinta md:inline">
-                {label}
-              </a>
-            ))}
-            <a href="#contact" className="hover:text-tinta">
-              {c.nav.contact}
-            </a>
-            <Link href={`/${other}`} hrefLang={other === "pt" ? "pt-BR" : "en"} className="rounded-full border border-nevoa px-3 py-1 hover:border-sinal hover:text-sinal">
-              {c.switchLang}
-            </Link>
-          </div>
-        </nav>
-      </header>
-
-      <Sidebar
-        items={[
-          { id: "map", label: c.nav.map },
-          { id: "projects", label: c.nav.projects },
-          { id: "path", label: c.nav.path },
-          { id: "stories", label: c.nav.stories },
-          { id: "contact", label: c.nav.contact },
-        ]}
-        name={c.hero.name}
-        role={c.hero.role}
-        photo={PHOTO}
-        available={c.hero.available}
-        switchHref={`/${other}`}
-        switchLabel={c.switchLang}
-        switchLang={other === "pt" ? "pt-BR" : "en"}
-        links={LINKS}
-        navLabel={lang === "pt" ? "Seções" : "Sections"}
-      />
-
-      <div className="lg:pl-64">
-      <main id="top">
-        <section id="intro" className="tone-purple relative overflow-hidden">
-          <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-          <div>
-            <Image
-              src={PHOTO}
-              alt={c.hero.photoAlt}
-              width={160}
-              height={160}
-              priority
-              className="size-28 rotate-[-4deg] rounded-[2rem] border-4 border-white object-cover lg:hidden object-top shadow-[0_12px_30px_-12px_rgb(19_35_58/0.5)] sm:size-32"
-            />
-            <p className="mt-6 inline-flex items-center gap-2 font-display text-sm text-entregue lg:hidden">
-              <span aria-hidden className="h-2 w-2 rounded-full bg-entregue" />
-              {c.hero.available}
-            </p>
-            <h1 className="mt-3 font-display lg:mt-0 text-[clamp(3rem,8vw,6.2rem)] font-extrabold leading-[0.88] tracking-[-0.045em]">{c.hero.name}</h1>
-            <p className="mt-4 inline-block -rotate-1 rounded-lg bg-[#f6dc93] px-3 py-1 font-display text-xl font-bold text-[#13233a]">{c.hero.role}</p>
-            <p className="mt-5 max-w-lg text-lg">{c.hero.intro}</p>
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-display text-[0.95rem] font-medium">
-              <a href={c.hero.cvHref} download className="rounded-lg bg-tinta px-5 py-3 text-papel transition-colors hover:bg-sinal">
-                {c.hero.cv}
-              </a>
-              <a href={LINKS.github} target="_blank" rel="noreferrer" className={link}>
-                GitHub
-              </a>
-              <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className={link}>
-                LinkedIn
-              </a>
-            </div>
-          </div>
-          <ChatExplorer script={c.chat} photo={PHOTO} name={c.chat.labels.me} />
-          </div>
-        </section>
-
-        <Section id="map" title={c.map.title} subtitle={c.map.subtitle} tone="green">
-          <SystemMap nodes={c.map.nodes} hint={c.map.hint} didLabel={c.map.didLabel} />
-        </Section>
-
-        <Section id="projects" title={c.projects.title} subtitle={c.projects.subtitle} tone="mustard">
-          <ProjectTabs projects={c.projects.items} labels={c.projects} previews={c.previews} />
-        </Section>
-
-        <Section id="path" title={c.trajectory.title} subtitle={c.trajectory.subtitle}>
-          <ol className="grid max-w-4xl gap-10 border-l-2 border-nevoa pl-8">
-            {c.experience.items.map((job, i) => (
-              <li key={job.company} className="relative">
-                <span
-                  aria-hidden
-                  className={`absolute -left-[2.55rem] top-2 h-4 w-4 rounded-full ${i === 0 ? "bg-sinal ring-4 ring-sinal-soft" : "border-2 border-nevoa bg-papel"}`}
-                />
-                <p className="font-display text-sm text-muted">{job.period}</p>
-                <h3 className="mt-1 font-display text-2xl font-semibold tracking-tight">
-                  {job.role}
-                  <span className="block text-xl font-normal text-muted">{job.company}</span>
-                </h3>
-                <p className="mt-2 max-w-2xl text-muted">{job.summary}</p>
-                {i === 0 && (
-                  <div className="mt-6">
-                    <p className="font-display text-sm font-semibold">{c.trajectory.productsLabel}</p>
-                    <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-                      {c.work.items.map((p) => (
-                        <div key={p.name} className="rounded-2xl border border-nevoa bg-surface p-4">
-                          <dt className="font-display font-semibold">{p.name}</dt>
-                          <dd className="mt-1 text-[0.95rem]">{p.what}</dd>
-                          <dd className="mt-1 text-[0.95rem] text-muted">{p.role}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ol>
-        </Section>
-
-        <Section id="stories" title={c.stories.title} subtitle={c.stories.subtitle} tone="pink">
-          <div className="max-w-4xl divide-y divide-[rgb(19_35_58/0.14)] border-y border-[rgb(19_35_58/0.14)]">
-            {c.stories.items.map((st) => (
-              <article key={st.title} className="grid gap-x-10 gap-y-4 py-9 md:grid-cols-[1fr_1.1fr]">
-                <div>
-                  <h3 className="font-display text-2xl font-bold leading-tight tracking-tight">{st.title}</h3>
-                  <p className="mt-2 text-muted">{st.teaser}</p>
-                </div>
-                <dl className="grid grid-cols-2 gap-4 font-display">
-                  {[st.before, st.after].map((side, i) => (
-                    <div key={side.label} className={`rounded-2xl p-4 ${i ? "bg-white" : "bg-white/45"}`}>
-                      <dt className="text-sm text-muted">{side.label}</dt>
-                      <dd className={`mt-1 leading-snug ${i ? "font-semibold text-[#0f7a5f]" : ""}`}>{side.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <details className="group md:col-start-2">
-                  <summary className="cursor-pointer list-none font-display text-sm font-bold text-sinal hover:underline">
-                    <span className="inline-block transition-transform group-open:rotate-90" aria-hidden>
-                      ›
-                    </span>{" "}
-                    {c.stories.readLabel}
-                  </summary>
-                  <div className="mt-3 space-y-3 text-[0.98rem]">
-                    {st.story.map((p) => (
-                      <p key={p.slice(0, 40)}>{p}</p>
-                    ))}
-                    <p className="font-display text-sm text-muted">{st.tags.join(", ")}</p>
-                  </div>
-                </details>
-              </article>
-            ))}
-          </div>
-        </Section>
-
-        {/* the page ends with a business card */}
-        <section id="contact" aria-labelledby="contact-title" className="tone-ink relative scroll-mt-16 overflow-hidden">
-          <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:py-28 lg:grid-cols-[1fr_1.1fr]">
-            <div>
-              <h2 id="contact-title" className="font-display text-[clamp(2.2rem,5vw,3.5rem)] font-bold leading-[1.02] tracking-[-0.03em]">
-                {c.closing.title}
-              </h2>
-              <p className="mt-5 max-w-md text-lg text-muted">{c.closing.text}</p>
-              <div className="mt-8 flex flex-wrap gap-3 font-display font-semibold">
-                <a href={`mailto:${LINKS.email}`} className="rounded-full bg-sinal px-6 py-3 text-white transition-transform hover:-translate-y-0.5">
-                  {c.closing.email}
-                </a>
-                <a href={c.hero.cvHref} download className="rounded-full border-2 border-tinta/20 px-6 py-3 hover:border-sinal hover:text-sinal">
-                  {c.closing.cvLabel}
-                </a>
-              </div>
-            </div>
-
-            <div className="tone-card relative mx-auto w-full max-w-lg rotate-[-2.5deg] rounded-[1.75rem] bg-surface p-7 shadow-[12px_12px_0_#f6dc93] transition-transform hover:rotate-0 sm:p-8">
-              <div className="flex items-start justify-between gap-6">
-                <div className="min-w-0">
-                  <Image src={PHOTO} alt="" width={72} height={72} className="size-16 rounded-2xl object-cover object-top" />
-                  <p className="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight">{c.hero.name}</p>
-                  <p className="font-display font-semibold text-[#4c3bff]">{c.hero.role}</p>
-                  <p className="mt-1 text-sm text-muted">{c.contact.location}</p>
-                </div>
-                <figure className="shrink-0 text-center">
-                  <div className="size-28 rounded-xl bg-white p-2 ring-1 ring-nevoa sm:size-32" dangerouslySetInnerHTML={{ __html: qr }} />
-                  <figcaption className="mt-2 max-w-[8rem] font-display text-[0.7rem] leading-tight text-muted">{c.closing.qr}</figcaption>
-                </figure>
-              </div>
-              <ul className="mt-6 space-y-1.5 border-t border-dashed border-nevoa pt-5 font-display text-[0.95rem]">
-                <li>
-                  <a href={`mailto:${LINKS.email}`} className="break-all hover:text-[#4c3bff]">
-                    {LINKS.email}
-                  </a>
-                </li>
-                <li>
-                  <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="hover:text-[#4c3bff]">
-                    linkedin.com/in/vinicius-fontanella
-                  </a>
-                </li>
-                <li>
-                  <a href={LINKS.github} target="_blank" rel="noreferrer" className="hover:text-[#4c3bff]">
-                    github.com/fontanella01
-                  </a>
-                </li>
-                <li className="text-muted">{c.closing.site}</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="tone-ink border-t border-nevoa py-8 text-center font-display text-sm text-muted">
-        © {new Date().getFullYear()} {c.hero.name}
-      </footer>
-      </div>
+      <Inbox convos={convos} aliases={ALIASES} listTitle={c.inbox.title} backLabel={c.inbox.back} listTop={listTop} listBottom={listBottom} />
     </>
   );
 }

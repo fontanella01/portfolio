@@ -61,6 +61,7 @@ type Content = {
   stories: { title: string; subtitle: string; readLabel: string; items: Story[] };
   experience: { title: string; items: Job[] };
   contact: { title: string; text: string; location: string };
+  inbox: { title: string; back: string; next: string; screens: string };
   switchLang: string;
 };
 
@@ -107,7 +108,7 @@ export const CONTENT: Record<Lang, Content> = {
           sub: "onde o cliente está",
           what: "As mensagens dos clientes chegam e saem pela API oficial do WhatsApp. Também integro Instagram e anúncios da Meta.",
           did: ["Integração com a API oficial do WhatsApp no Relay e no CRM da empresa", "Coleta de métricas do Instagram e a revisão do app pela Meta"],
-          links: [{ label: "Ver o Relay", href: "#p-relay" }, { label: "História das métricas", href: "#stories" }],
+          links: [{ label: "Ver o Relay", href: "#p-relay" }, { label: "História das métricas", href: "#story-2" }],
         },
         payments: {
           label: "Pagamentos",
@@ -121,7 +122,7 @@ export const CONTENT: Record<Lang, Content> = {
           sub: "por onde os avisos chegam",
           what: "Outros sistemas usam o webhook para avisar que algo aconteceu, como uma mensagem nova ou um pagamento aprovado.",
           did: ["Conferência da assinatura em cada chamada, para saber que o aviso veio mesmo do WhatsApp ou do Mercado Pago", "Achei e corrigi a regra que fazia a IA de uma clínica parar de responder"],
-          links: [{ label: "Ler a história", href: "#stories" }],
+          links: [{ label: "Ler a história", href: "#story-1" }],
         },
         queue: {
           label: "Fila",
@@ -142,7 +143,7 @@ export const CONTENT: Record<Lang, Content> = {
           sub: "PostgreSQL e Supabase",
           what: "É onde ficam os dados. Cada empresa só vê os próprios registros, e os relatórios são calculados no próprio banco.",
           did: ["Separação entre empresas no HelpDesk e no CRM", "Relatórios e painéis calculados no PostgreSQL", "Migração de 7 mil alunos de outra plataforma"],
-          links: [{ label: "Ver o HelpDesk", href: "#p-helpdesk" }, { label: "Ler as histórias", href: "#stories" }],
+          links: [{ label: "Ver o HelpDesk", href: "#p-helpdesk" }, { label: "Ler as histórias", href: "#story-3" }],
         },
         panel: {
           label: "Painel da equipe",
@@ -261,7 +262,7 @@ export const CONTENT: Record<Lang, Content> = {
             "Fui nos dados de produção e achei a causa: o sistema de agendamento da clínica mandava mensagens automáticas pelo mesmo número, e elas eram gravadas como se um atendente tivesse assumido.",
             "Ajustei a regra, testei com as mensagens reais e reativei as conversas. A IA voltou de 2 a 6 respostas por dia para mais de 150.",
           ],
-          links: [{ label: "Mais histórias", href: "#stories" }],
+          links: [{ label: "Mais histórias", href: "#story-2" }],
           next: ["more", "work"],
         },
         more: {
@@ -270,7 +271,7 @@ export const CONTENT: Record<Lang, Content> = {
             "Tenho! Na plataforma para agências, a coleta de métricas do Instagram parou em silêncio depois de uma mudança na API da Meta. Isolei cada chamada para uma falha não derrubar o resto, e depois conduzi a revisão do app pela Meta.",
             "E numa plataforma de cursos, migrei uns 7 mil alunos de outro sistema, conferindo os dados antes e depois da virada.",
           ],
-          links: [{ label: "Ler as histórias", href: "#stories" }],
+          links: [{ label: "Ler as histórias", href: "#story-2" }],
           next: ["hire"],
         },
         stack: {
@@ -299,7 +300,7 @@ export const CONTENT: Record<Lang, Content> = {
         typing: "digitando…",
         restart: "Recomeçar a conversa",
         pick: "Perguntas",
-        done: "Você viu todas as perguntas. Os projetos estão logo abaixo.",
+        done: "Você viu todas as perguntas. Os projetos e as histórias estão na lista de conversas.",
         me: "Vinícius",
       },
     },
@@ -424,6 +425,7 @@ export const CONTENT: Record<Lang, Content> = {
       text: "Estou aberto a vagas full stack (remotas ou híbridas) e a projetos freelance.",
       location: "Joinville, SC, Brasil",
     },
+    inbox: { title: "Conversas", back: "Voltar para as conversas", next: "Próxima", screens: "Telas do projeto" },
     switchLang: "English",
   },
   en: {
@@ -443,7 +445,7 @@ export const CONTENT: Record<Lang, Content> = {
           sub: "where customers are",
           what: "Customer messages come in and go out through the official WhatsApp API. I also integrate Instagram and Meta ads.",
           did: ["Official WhatsApp API integration in Relay and in the company CRM", "Instagram metrics collection and Meta's app review"],
-          links: [{ label: "See Relay", href: "#p-relay" }, { label: "The metrics story", href: "#stories" }],
+          links: [{ label: "See Relay", href: "#p-relay" }, { label: "The metrics story", href: "#story-2" }],
         },
         payments: {
           label: "Payments",
@@ -457,7 +459,7 @@ export const CONTENT: Record<Lang, Content> = {
           sub: "where notifications arrive",
           what: "Other systems use the webhook to report that something happened, like a new message or an approved payment.",
           did: ["Signature check on every call, to know the notification really came from WhatsApp or Mercado Pago", "Found and fixed the rule that made a clinic's AI stop answering"],
-          links: [{ label: "Read the story", href: "#stories" }],
+          links: [{ label: "Read the story", href: "#story-1" }],
         },
         queue: {
           label: "Queue",
@@ -478,7 +480,7 @@ export const CONTENT: Record<Lang, Content> = {
           sub: "PostgreSQL and Supabase",
           what: "This is where the data lives. Each company only sees its own records, and reports are computed in the database itself.",
           did: ["Separation between companies in HelpDesk and the CRM", "Reports and dashboards computed in PostgreSQL", "Migrating 7,000 students from another platform"],
-          links: [{ label: "See HelpDesk", href: "#p-helpdesk" }, { label: "Read the stories", href: "#stories" }],
+          links: [{ label: "See HelpDesk", href: "#p-helpdesk" }, { label: "Read the stories", href: "#story-3" }],
         },
         panel: {
           label: "Team dashboard",
@@ -597,7 +599,7 @@ export const CONTENT: Record<Lang, Content> = {
             "I dug into production data and found it: the clinic's scheduling system sent automated messages from the same number, and they were recorded as if a human agent had taken over.",
             "I fixed the rule, tested it with the real messages and re-enabled the conversations. The AI went from 2 to 6 replies a day back to over 150.",
           ],
-          links: [{ label: "More stories", href: "#stories" }],
+          links: [{ label: "More stories", href: "#story-2" }],
           next: ["more", "work"],
         },
         more: {
@@ -606,7 +608,7 @@ export const CONTENT: Record<Lang, Content> = {
             "Sure! On the agency platform, Instagram metrics stopped arriving silently after a Meta API change. I isolated every call so one failure couldn't break the rest, then ran the app review with Meta.",
             "And on a learning platform, I migrated about 7,000 students from another system, checking the data before and after the switch.",
           ],
-          links: [{ label: "Read the stories", href: "#stories" }],
+          links: [{ label: "Read the stories", href: "#story-2" }],
           next: ["hire"],
         },
         stack: {
@@ -635,7 +637,7 @@ export const CONTENT: Record<Lang, Content> = {
         typing: "typing…",
         restart: "Start over",
         pick: "Questions",
-        done: "You've seen every question. The projects are right below.",
+        done: "You've seen every question. Projects and stories are in the conversation list.",
         me: "Vinícius",
       },
     },
@@ -760,6 +762,7 @@ export const CONTENT: Record<Lang, Content> = {
       text: "I'm open to full stack roles (remote or hybrid) and to freelance projects.",
       location: "Joinville, SC, Brazil",
     },
+    inbox: { title: "Conversations", back: "Back to conversations", next: "Next", screens: "Project screens" },
     switchLang: "Português",
   },
 };
