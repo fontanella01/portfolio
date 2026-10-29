@@ -117,7 +117,7 @@ export function Inbox({
             ) : (
               <>
                 <div className="min-h-0 flex-1 overflow-y-auto">
-                  <div key={active === c.id ? "on" : "off"} className={`step-in mx-auto flex min-h-full flex-col justify-end gap-3 px-4 py-8 sm:px-8 ${c.wide ? "max-w-6xl" : "max-w-3xl"}`}>
+                  <div key={active === c.id ? "on" : "off"} className={`step-in mx-auto flex min-h-full flex-col justify-center gap-3 px-4 py-8 sm:px-8 ${c.wide ? "max-w-6xl" : "max-w-3xl"}`}>
                     {c.body}
                   </div>
                 </div>

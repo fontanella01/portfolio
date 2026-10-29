@@ -67,8 +67,8 @@ export function ChatExplorer({ script, top }: { script: ChatScript; top: ReactNo
   return (
     <>
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto">
-        {/* messages rest at the bottom, next to the questions, as in any chat */}
-        <div className="mx-auto flex min-h-full max-w-3xl flex-col justify-end px-4 py-8 sm:px-8">
+        {/* the card, the messages and the questions stay together in the middle */}
+        <div className="mx-auto flex min-h-full max-w-3xl flex-col justify-center px-4 py-8 sm:px-8">
           {top}
           <ol aria-live="polite" aria-label={script.labels.pick} className="mt-2.5 flex flex-col gap-2.5 font-display text-[0.97rem] leading-snug">
             {script.intro.map((text, i) => (
@@ -110,32 +110,31 @@ export function ChatExplorer({ script, top }: { script: ChatScript; top: ReactNo
               </li>
             )}
           </ol>
-        </div>
-      </div>
 
-      <footer className="border-t border-nevoa bg-white/55 px-4 py-3 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-2 font-display text-[0.85rem] font-medium">
-          {options.length ? (
-            options.map((id) => (
-              <button
-                key={id}
-                onClick={() => ask(id)}
-                disabled={typing}
-                className="rounded-full border border-tinta/15 bg-white px-3.5 py-1.5 text-left transition-colors hover:border-sinal hover:text-sinal disabled:opacity-50"
-              >
-                {script.topics[id].q}
-              </button>
-            ))
-          ) : (
-            <p className="text-muted">{script.labels.done}</p>
-          )}
+          {/* the visitor's possible replies, right under the last message */}
+          <div className="mt-4 flex flex-wrap justify-end gap-2 font-display text-[0.88rem] font-medium">
+            {options.length ? (
+              options.map((id) => (
+                <button
+                  key={id}
+                  onClick={() => ask(id)}
+                  disabled={typing}
+                  className="rounded-full border border-sinal/30 bg-white px-4 py-2 text-left shadow-sm transition-colors hover:border-sinal hover:text-sinal disabled:opacity-50"
+                >
+                  {script.topics[id].q}
+                </button>
+              ))
+            ) : (
+              <p className="text-muted">{script.labels.done}</p>
+            )}
+          </div>
           {asked.length > 0 && (
-            <button onClick={restart} className="ml-auto text-muted underline decoration-nevoa underline-offset-4 hover:text-sinal">
+            <button onClick={restart} className="mt-3 self-end font-display text-sm text-muted underline decoration-nevoa underline-offset-4 hover:text-sinal">
               {script.labels.restart}
             </button>
           )}
         </div>
-      </footer>
+      </div>
     </>
   );
 }
